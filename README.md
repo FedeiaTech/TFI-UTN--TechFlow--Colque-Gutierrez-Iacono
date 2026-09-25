@@ -14,30 +14,45 @@ TechFlow es un sistema de gestión pensado para talleres de reparación técnica
 
 La propuesta surge de un relevamiento de campo (encuestas y entrevistas a 3 talleres de distinto tamaño), no de una idea genérica de ERP de retail. Los perfiles relevados mostraron problemas recurrentes: sobrecarga de actualizaciones de estado por WhatsApp, falta de visibilidad sobre la rentabilidad real del negocio, y necesidad de delegar tareas por roles (Recepcionista vs. Técnico) a medida que el equipo crece.
 
-A partir de eso, el núcleo del producto quedó definido por el siguiente flujo operativo (el recorrido de una orden de trabajo a través del sistema, no la lista de módulos):
+A partir de eso, el núcleo obligatorio del producto (P0) quedó definido por el siguiente flujo operativo, validado con el tutor:
 
 ```text
-Órdenes de Trabajo → Clientes y Proveedores → Presupuestos y Cobros → Repuestos y Stock → Panel de Métricas + IA
+Cliente → Equipo → Orden → Diagnóstico → Presupuesto → Aprobación/Rechazo → Reparación → Listo → Entrega
 ```
 
-La IA (generación de descripciones, resúmenes de ventas en lenguaje natural) se suma al final, sobre un núcleo operativo ya funcional — no es el punto de partida del desarrollo.
+Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: se incorporan recién sobre un núcleo operativo ya validado.
 
-### Módulos
+### Módulos del P0
 
-Mismo orden que el flujo operativo, ahora como unidades funcionales del sistema:
+1. **Órdenes de Trabajo** (núcleo): flujo de estados Recibido → Diagnosticado → Presupuestado → Esperando aprobación adicional → Aprobado → Esperando repuesto → En Reparación → Listo → Listo - No retirado → Entregado, con estado de pago (Pendiente/Parcial/Pagado) llevado como campo separado.
+2. **Clientes**: ficha de cliente con historial de equipos y órdenes.
+3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: el [caso de referencia](entrega-2/Caso-Completo-Reparacion.md) confirma que el taller no entrega equipos con saldo pendiente; se reincorpora si otro taller confirma lo contrario.
+4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al presupuestar y se descuenta de stock recién cuando el técnico confirma su uso.
 
-1. **Órdenes de Trabajo** (núcleo): flujo de estados Recibido → Diagnosticado → Presupuestado → Aprobado/Rechazado → En Reparación → Listo → Entregado/Cobrado.
-2. **Clientes y Proveedores**.
-3. **Presupuestos y Cobros**: presupuestos por orden, pagos parciales y cuenta corriente.
-4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`), sin tablas específicas por tipo de dispositivo.
-5. **Panel de Métricas + IA**: dashboard analítico y generación de contenido/resúmenes vía IA (Gemini API).
+### Fuera de alcance del P0 (para instancias posteriores)
 
-**Fuera de alcance del MVP**: facturación electrónica (AFIP), integración con pasarelas de pago (Mercado Pago), impresoras fiscales, automatización vía WhatsApp API.
+- **Proveedores y Compras**: gestión de órdenes de compra a proveedores.
+- **Panel de Métricas + IA**: dashboard analítico y generación de contenido/resúmenes vía IA. Se incorpora una vez que el núcleo operativo tenga datos reales, no como punto de partida.
+- Facturación electrónica (AFIP), pasarelas de pago (Mercado Pago), impresoras fiscales, automatización vía WhatsApp API.
+
+## Entregas
+
+| Instancia | Fecha | Contenido |
+| --- | --- | --- |
+| 1.ª Entrega | 30/08/2026 | Propuesta + repositorio → [`entrega-1/`](entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md) |
+| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`entrega-2/`](entrega-2/) |
+| Entrega Final | 14/11/2026 | Código fuente, despliegue, documentación técnica y video |
+
+Documentos de la 2.ª entrega:
+
+- [Caso completo de reparación](entrega-2/Caso-Completo-Reparacion.md)
+- [Esquema de base de datos](entrega-2/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
+- [Módulos del P0](entrega-2/Modulos-P0.md)
 
 ## Plan de trabajo
 
-1. Propuesta + repositorio (esta entrega).
-2. Diseño de base de datos y definición de módulos, con validación del tutor y del comité.
+1. Propuesta + repositorio (1.ª entrega, completa).
+2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, pendiente de validación del tutor y del comité).
 3. Implementación del MVP: núcleo operativo (órdenes, clientes, presupuestos, stock) primero, analítica e IA al final.
 4. Despliegue online, informe final y video explicativo.
 5. Defensa oral ante el comité.
@@ -46,17 +61,17 @@ Mismo orden que el flujo operativo, ahora como unidades funcionales del sistema:
 
 - **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel o Netlify.
 - **Backend**: Spring Boot (Java) o FastAPI (Python + Pydantic/SQLModel), autenticación JWT. Hosting: Render o Railway.
-- **Base de datos**: en evaluación entre Firebase (NoSQL, Firestore) y Supabase (relacional, PostgreSQL) — decisión a consolidar antes de la 2.ª entrega (27/09).
+- **Base de datos**: PostgreSQL. Puede alojarse en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
 - **Gestión de proyecto**: Trello (Kanban).
 - **Control de versiones**: Git, con ramas `main`/`develop`/`feature`.
 
 ## Estructura del repositorio
 
 ```text
-/frontend       — aplicación React
-/backend        — API (Spring Boot o FastAPI)
-/database       — scripts y migraciones (postgresql/, mongodb/)
-/docs           — documentación y entregas
-/propuesta-original — versión original de la propuesta, previa a la unificación
-TRABAJO FINAL INTEGRADOR - unificado.docx — documento de propuesta unificado
+/entrega-1      — propuesta unificada de la 1.ª entrega (Markdown navegable)
+/entrega-2      — caso de referencia, esquema de base de datos y módulos de la 2.ª entrega
+/database       — scripts y migraciones (postgresql/)
+/frontend       — aplicación React (a partir de la implementación del MVP)
+/backend        — API Spring Boot o FastAPI (a partir de la implementación del MVP)
+/Devoluciones   — devoluciones formales del tutor
 ```
