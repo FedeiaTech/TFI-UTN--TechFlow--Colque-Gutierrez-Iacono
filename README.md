@@ -40,38 +40,43 @@ Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: 
 | Instancia | Fecha | Contenido |
 | --- | --- | --- |
 | 1.ª Entrega | 30/08/2026 | Propuesta + repositorio → [`entrega-1/`](entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md) |
-| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`entrega-2/`](entrega-2/) |
+| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos, módulos P0 y arquitectura → [`entrega-2/`](entrega-2/) |
 | Entrega Final | 14/11/2026 | Código fuente, despliegue, documentación técnica y video |
 
 Documentos de la 2.ª entrega:
 
 - [Caso completo de reparación](entrega-2/Caso-Completo-Reparacion.md)
-- [Esquema de base de datos](entrega-2/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
-- [Módulos del P0](entrega-2/Modulos-P0.md)
+- [Esquema de base de datos](docs/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
+- [Módulos del P0](docs/Modulos-P0.md)
+- [Arquitectura del proyecto](docs/Arquitectura.md)
 
 ## Plan de trabajo
 
 1. Propuesta + repositorio (1.ª entrega, completa).
-2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, pendiente de validación del tutor y del comité).
+2. Caso de referencia, diseño de base de datos, definición de módulos y arquitectura (2.ª entrega, pendiente de validación del tutor y del comité).
 3. Implementación del MVP: núcleo operativo (órdenes, clientes, presupuestos, stock) primero, analítica e IA al final.
 4. Despliegue online, informe final y video explicativo.
 5. Defensa oral ante el comité.
 
 ## Stack tecnológico
 
-- **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel o Netlify.
-- **Backend**: Spring Boot (Java) o FastAPI (Python + Pydantic/SQLModel), autenticación JWT. Hosting: Render o Railway.
-- **Base de datos**: PostgreSQL. Puede alojarse en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
+- **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel.
+- **Backend**: FastAPI (Python 3.10+), SQLAlchemy, OAuth2 + JWT. Hosting: Render.
+- **Base de datos**: PostgreSQL. Alojada en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
 - **Gestión de proyecto**: Trello (Kanban).
 - **Control de versiones**: Git, con ramas `main`/`develop`/`feature`.
+
+Ver justificación completa de cada decisión técnica en [docs/Arquitectura.md](docs/Arquitectura.md).
 
 ## Estructura del repositorio
 
 ```text
 /entrega-1      — propuesta unificada de la 1.ª entrega (Markdown navegable)
 /entrega-2      — caso de referencia, esquema de base de datos y módulos de la 2.ª entrega
+/docs           — arquitectura del proyecto y documentación técnica
 /database       — scripts y migraciones (postgresql/)
-/frontend       — aplicación React (a partir de la implementación del MVP)
-/backend        — API Spring Boot o FastAPI (a partir de la implementación del MVP)
+/frontend       — aplicación React (estructura inicial; código a partir de la implementación del MVP)
+/backend        — API FastAPI (estructura inicial; código a partir de la implementación del MVP)
 /Devoluciones   — devoluciones formales del tutor
 ```
+
