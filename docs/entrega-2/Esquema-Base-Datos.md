@@ -32,7 +32,7 @@ erDiagram
 
 ## Trazabilidad regla de negocio → diseño
 
-Reglas según `entrega-2/Caso-Completo-Reparacion.md`, sección 4.
+Reglas según `Caso-Completo-Reparacion.md`, sección 4.
 
 1. **Un presupuesto rechazado o reemplazado nunca se borra.** → `presupuestos` es versionado (`version`, `UNIQUE (orden_id, version)`); no hay operación de borrado ni de sobreescritura de versiones anteriores.
 2. **Un repuesto se reserva al presupuestar y se descuenta de stock solo cuando el técnico confirma su uso.** → `repuesto_reservas.estado` distingue `reservado` de `utilizado`; `repuestos.stock_total` se decrementa por aplicación, no automáticamente al crear la reserva.
@@ -44,4 +44,4 @@ Reglas según `entrega-2/Caso-Completo-Reparacion.md`, sección 4.
 
 ## Fuera de este esquema
 
-Cuenta corriente, proveedores/compras, roles de usuario y métricas/IA no se modelan en el P0 (ver `entrega-2/Modulos-P0.md`).
+Cuenta corriente, proveedores/compras, roles de usuario y métricas/IA no se modelan en el P0 (ver `Modulos-P0.md`).

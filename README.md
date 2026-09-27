@@ -26,7 +26,7 @@ Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: 
 
 1. **Órdenes de Trabajo** (núcleo): flujo de estados Recibido → Diagnosticado → Presupuestado → Esperando aprobación adicional → Aprobado → Esperando repuesto → En Reparación → Listo → Listo - No retirado → Entregado, con estado de pago (Pendiente/Parcial/Pagado) llevado como campo separado.
 2. **Clientes**: ficha de cliente con historial de equipos y órdenes.
-3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: el [caso de referencia](entrega-2/Caso-Completo-Reparacion.md) confirma que el taller no entrega equipos con saldo pendiente; se reincorpora si otro taller confirma lo contrario.
+3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: el [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md) confirma que el taller no entrega equipos con saldo pendiente; se reincorpora si otro taller confirma lo contrario.
 4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al presupuestar y se descuenta de stock recién cuando el técnico confirma su uso.
 
 ### Fuera de alcance del P0 (para instancias posteriores)
@@ -39,15 +39,16 @@ Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: 
 
 | Instancia | Fecha | Contenido |
 | --- | --- | --- |
-| 1.ª Entrega | 30/08/2026 | Propuesta + repositorio → [`entrega-1/`](entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md) |
-| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`entrega-2/`](entrega-2/) |
+| 1.ª Entrega | 30/08/2026 | Propuesta + repositorio → [`docs/entrega-1/`](docs/entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md) |
+| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`docs/entrega-2/`](docs/entrega-2/) |
 | Entrega Final | 14/11/2026 | Código fuente, despliegue, documentación técnica y video |
 
 Documentos de la 2.ª entrega:
 
-- [Caso completo de reparación](entrega-2/Caso-Completo-Reparacion.md)
-- [Esquema de base de datos](entrega-2/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
-- [Módulos del P0](entrega-2/Modulos-P0.md)
+- [Caso completo de reparación](docs/entrega-2/Caso-Completo-Reparacion.md)
+- [Esquema de base de datos](docs/entrega-2/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
+- [Módulos del P0](docs/entrega-2/Modulos-P0.md)
+- [Arquitectura](docs/entrega-2/Arquitectura.md)
 
 ## Plan de trabajo
 
@@ -59,19 +60,20 @@ Documentos de la 2.ª entrega:
 
 ## Stack tecnológico
 
-- **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel o Netlify.
-- **Backend**: Spring Boot (Java) o FastAPI (Python + Pydantic/SQLModel), autenticación JWT. Hosting: Render o Railway.
-- **Base de datos**: PostgreSQL. Puede alojarse en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
+- **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel. Detalle en [`frontend/README.md`](frontend/README.md).
+- **Backend**: FastAPI (Python 3.10+), SQLAlchemy/SQLModel, OAuth2 + JWT. Hosting: Render. Detalle en [`backend/README.md`](backend/README.md).
+- **Base de datos**: PostgreSQL, alojada en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
 - **Gestión de proyecto**: Trello (Kanban).
 - **Control de versiones**: Git, con ramas `main`/`develop`/`feature`.
 
 ## Estructura del repositorio
 
 ```text
-/entrega-1      — propuesta unificada de la 1.ª entrega (Markdown navegable)
-/entrega-2      — caso de referencia, esquema de base de datos y módulos de la 2.ª entrega
+/docs
+  /entrega-1    — propuesta unificada de la 1.ª entrega (Markdown navegable)
+  /entrega-2    — caso de referencia, esquema de base de datos y módulos de la 2.ª entrega
 /database       — scripts y migraciones (postgresql/)
-/frontend       — aplicación React (a partir de la implementación del MVP)
-/backend        — API Spring Boot o FastAPI (a partir de la implementación del MVP)
+/frontend       — aplicación React (estructura inicial; código a partir de la implementación del MVP)
+/backend        — API FastAPI (estructura inicial; código a partir de la implementación del MVP)
 /Devoluciones   — devoluciones formales del tutor
 ```

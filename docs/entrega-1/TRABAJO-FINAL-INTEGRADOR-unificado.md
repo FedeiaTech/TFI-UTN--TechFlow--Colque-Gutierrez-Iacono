@@ -4,9 +4,9 @@
 > **Nota de archivo.** Este documento es la propuesta original de la 1.ª entrega (30/08/2026),
 > convertida a Markdown el 25/09/2026 a pedido del tutor Oscar Londero para que el repositorio
 > sea navegable desde GitHub sin depender de archivos Word/PDF. El original en `.docx` queda
-> conservado en `Docs/.old/` como respaldo histórico. Para el estado **vigente** del proyecto
+> conservado en `borradores/.old/` como respaldo histórico. Para el estado **vigente** del proyecto
 > (alcance P0, stack cerrado, persistencia en PostgreSQL), ver el `README.md` de la raíz y
-> `entrega-2/`.
+> `docs/entrega-2/`.
 
 
 ## 1.ª Entrega — Propuesta de Proyecto y Repositorio
