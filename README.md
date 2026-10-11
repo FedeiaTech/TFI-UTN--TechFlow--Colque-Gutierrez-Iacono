@@ -26,7 +26,7 @@ Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: 
 
 1. **Órdenes de Trabajo** (núcleo): flujo de estados Recibido → Diagnosticado → Presupuestado → Esperando aprobación adicional → Aprobado → Esperando repuesto → En Reparación → Listo → Listo - No retirado → Entregado, con estado de pago (Pendiente/Parcial/Pagado) llevado como campo separado.
 2. **Clientes**: ficha de cliente con historial de equipos y órdenes.
-3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: el [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md) confirma que el taller no entrega equipos con saldo pendiente; se reincorpora si otro taller confirma lo contrario.
+3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: por decisión del grupo (ver [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md), regla 8) una orden no se entrega con saldo pendiente. Es una decisión no validada por un negocio real; se reincorpora si un negocio indica lo contrario.
 4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al presupuestar y se descuenta de stock recién cuando el técnico confirma su uso.
 
 ### Fuera de alcance del P0 (para instancias posteriores)
@@ -53,7 +53,7 @@ Documentos de la 2.ª entrega:
 ## Plan de trabajo
 
 1. Propuesta + repositorio (1.ª entrega, completa).
-2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, pendiente de validación del tutor y del comité).
+2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, conforme con correcciones según la devolución del tutor del 05-10).
 3. Implementación del MVP: núcleo operativo (órdenes, clientes, presupuestos, stock) primero, analítica e IA al final.
 4. Despliegue online, informe final y video explicativo.
 5. Defensa oral ante el comité.

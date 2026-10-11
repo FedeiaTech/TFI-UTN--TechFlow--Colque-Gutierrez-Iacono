@@ -32,7 +32,7 @@ erDiagram
 
 ## Trazabilidad regla de negocio → diseño
 
-Reglas según `Caso-Completo-Reparacion.md`, sección 4.
+Reglas según `Caso-Completo-Reparacion.md`, sección 4. Ninguna fue validada por un negocio real salvo lo indicado como "Relevada" en esa sección; la columna de origen vive allí.
 
 1. **Un presupuesto rechazado o reemplazado nunca se borra.** → `presupuestos` es versionado (`version`, `UNIQUE (orden_id, version)`); no hay operación de borrado ni de sobreescritura de versiones anteriores.
 2. **Un repuesto se reserva al presupuestar y se descuenta de stock solo cuando el técnico confirma su uso.** → `repuesto_reservas.estado` distingue `reservado` de `utilizado`; `repuestos.stock_total` se decrementa por aplicación, no automáticamente al crear la reserva.
@@ -40,7 +40,9 @@ Reglas según `Caso-Completo-Reparacion.md`, sección 4.
 4. **Estado técnico y estado de pago son campos separados.** → `ordenes.estado` (enum `estado_orden`) y `ordenes.estado_pago` (enum `estado_pago`) son dos columnas independientes; no existe un estado combinado tipo "entregado/cobrado".
 5. **No se almacena PIN/contraseña del equipo.** → No hay columna para ese dato en `equipos` ni en ninguna otra tabla.
 6. **Equipo `Listo` sin retirar pasa a alerta a los 30 días, con segundo aviso documentado.** → `ordenes.fecha_listo`, `fecha_primer_aviso_no_retirado` y `fecha_segundo_aviso_no_retirado` permiten calcular y dejar constancia del vencimiento sin una tabla aparte.
-7. **No se habla de "rentabilidad neta", solo margen por reparación.** → No es una restricción de esquema; se resuelve en la capa de reportes, calculando `SUM(pagos.monto) - repuestos_utilizados - mano_obra` por orden, sin ninguna columna ni vista llamada "rentabilidad neta".
+7. **No se habla de "rentabilidad neta", solo margen por reparación.** → No es una restricción de esquema; se resuelve en la capa de reportes, calculando `SUM(pagos.monto) - repuestos_utilizados - mano_obra` por orden, sin ninguna columna ni vista llamada "rentabilidad neta". **Limitación:** el esquema actual no conserva el costo histórico de repuestos ni define el costo real de mano de obra, por lo que ese margen todavía no es confiable; el cálculo queda pospuesto hasta definir una política de costos.
+8. **Una orden no pasa a `Entregado` con saldo pendiente.** → Todavía no está respaldada por el esquema: es una regla de backend (saldo = total aprobado − suma de `pagos.monto`), pendiente de implementar y testear.
+9. **El cliente puede consultar el estado sin escribir al técnico.** → Sin soporte en el esquema actual; se resolverá con un mensaje de estado generado por el sistema y, más adelante, un enlace seguro de consulta.
 
 ## Fuera de este esquema
 
