@@ -4,3 +4,8 @@ Consignas.md
 Consignas2.md
 CAMBIOS-UNIFICACION.md
 borradores/
+
+# Secretos y configuración local
+.env
+.env.*
+!.env.example
