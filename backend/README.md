@@ -1,11 +1,11 @@
 # Backend — TechFlow
 
-> Este directorio contendrá la API REST a partir de la etapa de implementación (Entrega Final).
+> Este directorio contiene el esqueleto de la API REST (FastAPI): configuración, conexión a PostgreSQL, endpoints de salud y pruebas. La lógica de dominio se incorporará de forma incremental.
 
 ## Stack
 
 - **FastAPI** (Python 3.10+)
-- **SQLAlchemy / SQLModel** para persistencia
+- **SQLAlchemy 2.x** (decisión tomada; no se usa SQLModel) con **psycopg 3** para persistencia
 - **OAuth2 + JWT** para autenticación
 - **PostgreSQL** como base de datos
 
@@ -25,6 +25,24 @@ backend/
 ├── requirements.txt
 └── README.md
 ```
+
+## Puesta en marcha local
+
+Desde el directorio `backend/` (PowerShell en Windows):
+
+```powershell
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+copy .env.example .env   # completar DATABASE_URL; el .env no se versiona
+uvicorn app.main:app --reload
+pytest
+```
+
+- `GET /health` responde `{"status":"ok"}` sin tocar la base.
+- `GET /health/db` ejecuta `SELECT 1`; responde 503 con un mensaje genérico si falta `DATABASE_URL` o falla la conexión.
+- `DATABASE_URL` admite `postgresql://...`; se normaliza a `postgresql+psycopg://` para SQLAlchemy.
+- Las pruebas que requieren base se omiten si no hay `DATABASE_URL`.
 
 ## Patrones aplicados
 
