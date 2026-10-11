@@ -33,4 +33,10 @@ Vercel (deploy automático desde GitHub).
 
 ---
 
-> ⚠️ **Nota**: en esta instancia (2.ª Entrega) no se sube código ni implementación. Esta carpeta existe para reflejar la estructura del repositorio. La codificación comienza una vez aprobada esta entrega por el tutor.
+> **Enfoque de implementación**: el modelo se valida construyendo. Se modela, se implementa un recorrido pequeño, se comprueba, se corrige el modelo y se continúa. No se espera a una aprobación total del diseño para empezar a codificar.
+>
+> **Primer objetivo**: una vertical ejecutable cliente → equipo → orden → diagnóstico → cotización → aprobación → reserva → reparación → listo → pago → entrega.
+>
+> **Segundo objetivo**: una segunda situación con trabajo adicional durante la reparación (nueva falla, nuevo trabajo y cotización independiente).
+>
+> El esquema vigente está en [`database/postgresql/schema.sql`](../database/postgresql/schema.sql). Las pruebas de backend obligatorias están en [`docs/entrega-2/Esquema-Base-Datos.md`](../docs/entrega-2/Esquema-Base-Datos.md).

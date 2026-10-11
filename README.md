@@ -17,17 +17,17 @@ La propuesta surge de un relevamiento de campo (encuestas y entrevistas a 3 tall
 A partir de eso, el núcleo obligatorio del producto (P0) quedó definido por el siguiente flujo operativo, validado con el tutor:
 
 ```text
-Cliente → Equipo → Orden → Diagnóstico → Presupuesto → Aprobación/Rechazo → Reparación → Listo → Entrega
+Cliente → Equipo → Orden → Diagnóstico → Cotización → Aprobación/Rechazo → Reparación → Listo → Entrega
 ```
 
 Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: se incorporan recién sobre un núcleo operativo ya validado.
 
 ### Módulos del P0
 
-1. **Órdenes de Trabajo** (núcleo): flujo de estados Recibido → Diagnosticado → Presupuestado → Esperando aprobación adicional → Aprobado → Esperando repuesto → En Reparación → Listo → Listo - No retirado → Entregado, con estado de pago (Pendiente/Parcial/Pagado) llevado como campo separado.
+1. **Órdenes de Trabajo** (núcleo): estado global simple (Recibido → En proceso → Listo → Listo - No retirado → Entregado) con resultado (Reparado/Parcial/Sin reparación). Cada orden agrupa trabajos con su propio diagnóstico y estado técnico (por ejemplo, Esperando repuesto o En reparación), a cargo de un técnico responsable, con historial de cambios de estado. El estado de pago (Pendiente/Parcial/Pagado) no es un campo editable: se deriva de las cotizaciones aprobadas y los pagos.
 2. **Clientes**: ficha de cliente con historial de equipos y órdenes.
-3. **Presupuestos y Cobros**: presupuestos versionados por orden (ninguna versión se borra), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: por decisión del grupo (ver [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md), regla 8) una orden no se entrega con saldo pendiente. Es una decisión no validada por un negocio real; se reincorpora si un negocio indica lo contrario.
-4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al presupuestar y se descuenta de stock recién cuando el técnico confirma su uso.
+3. **Cotizaciones y Cobros**: cotizaciones independientes por trabajo (ninguna se borra; el total de la orden es la suma de las aprobadas), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: por decisión del grupo (ver [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md), regla 8) una orden no se entrega con saldo pendiente. Es una decisión no validada por un negocio real; se reincorpora si un negocio indica lo contrario.
+4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al cotizar y se descuenta de stock recién cuando el técnico confirma su uso.
 
 ### Fuera de alcance del P0 (para instancias posteriores)
 
@@ -54,7 +54,7 @@ Documentos de la 2.ª entrega:
 
 1. Propuesta + repositorio (1.ª entrega, completa).
 2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, conforme con correcciones según la devolución del tutor del 05-10).
-3. Implementación del MVP: núcleo operativo (órdenes, clientes, presupuestos, stock) primero, analítica e IA al final.
+3. Implementación del MVP: núcleo operativo (órdenes, clientes, cotizaciones, stock) primero, analítica e IA al final.
 4. Despliegue online, informe final y video explicativo.
 5. Defensa oral ante el comité.
 
