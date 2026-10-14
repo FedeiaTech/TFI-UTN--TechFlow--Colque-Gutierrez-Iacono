@@ -13,6 +13,9 @@ Materia: Trabajo Final Integrador (TFI).
 
 ## 2. Asignación de Roles y Responsabilidades Técnicas
 
+> [!IMPORTANT]
+> **Propuesta a confirmar por el equipo.** Los roles y la matriz RACI son un borrador de David; hay que acordarlos entre los tres antes de darlos por cerrados. Fede ya viene trabajando el modelo y el backend, y el resto se puede mover según disponibilidad y nivel de cada uno.
+
 Para asegurar una ejecución eficiente, evitar cuellos de botella y garantizar que los tres integrantes participen activamente en la construcción y defensa técnica del proyecto, se delimitan las responsabilidades principales:
 
 | Integrante | Rol Principal | Responsabilidades Clave |

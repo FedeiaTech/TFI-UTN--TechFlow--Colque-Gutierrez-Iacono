@@ -78,12 +78,22 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Organización del equipo: definición de roles entre Federico, David y Brian, matriz RACI, metodología GitFlow y plan de trabajo del vertical ejecutable.
 
 ### Commit 6: Índices de Navegación, Exclusión de Guías y Cierre
-- **Estado:** En proceso / staging
+- **Hash:** `ab78423`
 - **Archivos:**
   - `.gitignore` (exclusión formal de guías de cátedra de uso local).
   - `README.md` (actualización de enlaces modulares de la 2.ª entrega).
   - `docs/entrega-2/README.md` (índice general de la 2.ª entrega con mapa modular y catálogo de diagramas PlantUML).
 - **Aporte clave:** Conecta la totalidad del repositorio haciéndolo 100% navegable desde GitHub sin enlaces rotos, preparando la rama para el Pull Request hacia `dev`.
+
+### Commit 7: Corrección de Origen de Cifras y Puntos a Completar por el Equipo
+- **Estado:** en preparación
+- **Archivos:** `01-contexto-problematica-y-relevamiento.md`, `04-caso-completo-reparacion.md`, `09-roles-y-organizacion-equipo.md`, `10-arquitectura-tecnica.md`, `entrega-2/README.md`.
+- **Qué se corrigió:**
+  - Las cifras de "1,5–2 h diarias" y "20–35% de margen" figuraban como hipótesis del equipo; en realidad salieron de una búsqueda con IA (Paso 4 del relevamiento original). Ahora están rotuladas así y se quitó la cifra de RN-09.
+  - Los competidores quedan como relevamiento preliminar a verificar.
+  - La tabla de competencias queda vacía para que cada uno declare su nivel real.
+  - Roles y RACI marcados como propuesta a confirmar entre los tres.
+- **Motivo:** la 1.ª devolución pide documentar el origen de las cifras, y no corresponde declarar niveles ajenos.
 
 ---
 
@@ -97,5 +107,6 @@ Commits consolidados:
   [x] Commit 3 (1ef3520) - docs: especifica requerimientos funcionales en Gherkin y casos de uso CU-01 a CU-08
   [x] Commit 4 (e4b2b73) - docs: modela maquinas de estado de orden/trabajos, ciclo de reservas y DER completo
   [x] Commit 5 (aed7c21) - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp
-  [x] Commit 6           - docs: actualiza indices de navegacion, exclusion de guias y referencias de la 2da entrega
+  [x] Commit 6 (ab78423) - docs: actualiza indices de navegacion, exclusion de guias y referencias de la 2da entrega
+  [ ] Commit 7           - docs: corrige origen de cifras y deja competencias y roles para confirmar
 ```

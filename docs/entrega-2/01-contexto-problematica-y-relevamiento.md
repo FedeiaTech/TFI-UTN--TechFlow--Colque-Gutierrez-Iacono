@@ -18,16 +18,16 @@ Para fundamentar la propuesta en necesidades comprobables y no en conjeturas te�
 - **Entrevistas directas semiestructuradas:** Charlas con dueños y técnicos de locales comerciales físicos
 
 ### 2.1. Declaración Metodológica y Rigor de Datos
-En cumplimiento de la devolución docente (Observación 1 de la 1.ª Devolución), se establece una distinción explícita entre **evidencia recolectada**, **estimaciones del equipo** y **referencias del sector**:
+En cumplimiento de la devolución docente (Observación 1 de la 1.ª Devolución), se distingue de forma explícita entre **evidencia recolectada**, **datos generados con IA** y **referencias del sector sin verificar**:
 
 ```text
-[DATO RELEVADO]    -> Respuesta textual o selección directa de los entrevistados en la encuesta.
-[HIPÓTESIS EQUIPO] -> Inferencia o cálculo estimado por el equipo a partir del análisis cualitativo.
-[REFERENCIA SECTOR]-> Datos derivados de relevamientos bibliográficos y benchmarking de software del rubro.
+[DATO RELEVADO]  -> Respuesta textual o selección directa de los entrevistados en la encuesta.
+[GENERADO CON IA]-> Cifra o dato obtenido mediante búsqueda/generación con IA sobre fuentes públicas (Paso 4 del relevamiento original). No fue validado con los entrevistados.
+[A VERIFICAR]    -> Referencia del sector (por ejemplo, competidores) tomada de una búsqueda web que todavía no contrastamos.
 ```
 
 > [!NOTE]
-> Las cifras frecuentemente citadas en discusiones preliminares (como "1.5 a 2 horas diarias respondiendo WhatsApp" o "20% a 35% de merma en margen por falta de costeo") corresponden a **[HIPÓTESIS DE IMPACTO FORMULADAS POR EL EQUIPO]** para dimensionar el costo de oportunidad, inspiradas en artículos del sector y observaciones de campo, pero **NO** deben interpretarse como mediciones estadísticas directas de los negocios encuestados. Los entrevistados expresaron el problema en términos cualitativos categóricos: *"pierdo tiempo valioso en contestaciones"*, *"el caos organizativo me obliga a buscar repuestos bajo demanda sin saber cuánto dinero pierdo"*, *"no sé en qué estoy perdiendo plata"*.
+> Las cifras que aparecieron en la primera entrega ("1,5 a 2 horas diarias respondiendo WhatsApp" y "20% a 35% de merma en margen por falta de costeo") **no salieron de los entrevistados ni de mediciones propias**: las obtuvimos con una búsqueda asistida por IA sobre fuentes públicas (Paso 4 del [relevamiento original](../entrega-1/relevamiento-de-campo-original.md)). Están marcadas como **[GENERADO CON IA]**, no las usamos para justificar el proyecto y no deben leerse como mediciones de los negocios encuestados. Los entrevistados expresaron el problema en términos cualitativos categóricos: *"pierdo tiempo valioso en contestaciones"*, *"el caos organizativo me obliga a buscar repuestos bajo demanda sin saber cuánto dinero pierdo"*, *"no sé en qué estoy perdiendo plata"*.
 
 ---
 
@@ -74,7 +74,7 @@ A través de la triangulación de las respuestas se extraen los cinco problemas 
 
 ## 5. Análisis Comparativo con Soluciones del Mercado (Benchmarking)
 
-Para comprender el estándar actual en el mercado nacional y regional, se analizaron herramientas específicas orientadas a talleres de reparación de electrónica (Loop, STApp, SAT Network):
+Para comprender el estándar actual en el mercado nacional y regional, se listaron algunas herramientas orientadas a talleres de reparación de electrónica (Loop, STApp, SAT Network, Sistema Uno). **Es un relevamiento preliminar a partir de una búsqueda web: todavía no probamos las herramientas ni verificamos sus funcionalidades [A VERIFICAR].**
 
 | Dimensión | Enfoque Genérico / Competencia Comercial | Enfoque TechFlow (TFI UTN) | Justificación Académica y Operativa |
 |---|---|---|---|
