@@ -12,6 +12,8 @@ Motor: PostgreSQL. Script completo en `database/postgresql/schema.sql`.
 
 ## Diagrama entidad-relación
 
+El diagrama relacional se encuentra disponible en formato PlantUML en [`diagramas/dominio/der_completo.puml`](diagramas/dominio/der_completo.puml).
+
 ```mermaid
 erDiagram
     USUARIOS ||--o{ ORDENES : "es tecnico responsable"

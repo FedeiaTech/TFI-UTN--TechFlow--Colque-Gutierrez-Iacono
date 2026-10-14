@@ -1,0 +1,21 @@
+@startuml estado_orden
+skinparam style strictuml
+skinparam state {
+    BackgroundColor #F8F9FA
+    BorderColor #2B3A42
+}
+
+[*] --> recibido : Ingreso del equipo\n(Creación de orden)
+
+recibido --> en_proceso : Inicio de diagnóstico\no primer trabajo
+
+en_proceso --> listo : Todos los trabajos en estado terminal\n(Fija: resultado = reparado | parcial | sin_reparacion\ny timestamp fecha_listo)
+
+listo --> listo_no_retirado : Transcurren 30 días sin retiro\ndesde fecha_listo (Dispara alerta)
+
+listo_no_retirado --> entregado : [saldo == 0]\nEntrega efectiva al cliente
+
+listo --> entregado : [saldo == 0]\nEntrega efectiva al cliente
+
+entregado --> [*] : Cierre definitivo de orden
+@enduml

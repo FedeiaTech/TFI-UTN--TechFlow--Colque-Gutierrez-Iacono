@@ -1,0 +1,159 @@
+@startuml der_completo_techflow
+skinparam linetype ortho
+skinparam style strictuml
+
+entity "usuarios" as usuarios {
+    * id : BIGINT <<PK>>
+    --
+    * nombre : TEXT
+    * email : TEXT <<UQ>>
+    * password_hash : TEXT
+    * activo : BOOLEAN
+    * creado_en : TIMESTAMPTZ
+}
+
+entity "clientes" as clientes {
+    * id : BIGINT <<PK>>
+    --
+    * nombre : TEXT
+    * telefono : TEXT
+    * creado_en : TIMESTAMPTZ
+}
+
+entity "equipos" as equipos {
+    * id : BIGINT <<PK>>
+    --
+    * cliente_id : BIGINT <<FK>>
+    * tipo : TEXT
+    marca : TEXT
+    * modelo : TEXT
+    numero_serie : TEXT
+    imei : TEXT
+    * creado_en : TIMESTAMPTZ
+}
+
+entity "ordenes" as ordenes {
+    * id : BIGINT <<PK>>
+    --
+    * equipo_id : BIGINT <<FK>>
+    * tecnico_id : BIGINT <<FK>>
+    * falla_reportada : TEXT
+    * estado_fisico_ingreso : TEXT
+    accesorios_entregados : TEXT
+    * estado : estado_orden
+    resultado : resultado_orden
+    fecha_listo : TIMESTAMPTZ
+    fecha_primer_aviso_no_retirado : TIMESTAMPTZ
+    fecha_segundo_aviso_no_retirado : TIMESTAMPTZ
+    * creado_en : TIMESTAMPTZ
+    * actualizado_en : TIMESTAMPTZ
+}
+
+entity "trabajos" as trabajos {
+    * id : BIGINT <<PK>>
+    --
+    * orden_id : BIGINT <<FK>>
+    * descripcion : TEXT
+    diagnostico : TEXT
+    * estado_tecnico : estado_tecnico_trabajo
+    * creado_en : TIMESTAMPTZ
+    * actualizado_en : TIMESTAMPTZ
+}
+
+entity "cotizaciones" as cotizaciones {
+    * id : BIGINT <<PK>>
+    --
+    * trabajo_id : BIGINT <<FK>>
+    * numero : INT
+    * estado : estado_cotizacion
+    motivo_rechazo : TEXT
+    * creada_en : TIMESTAMPTZ
+    decidida_en : TIMESTAMPTZ
+}
+
+entity "cotizacion_items" as cotizacion_items {
+    * id : BIGINT <<PK>>
+    --
+    * cotizacion_id : BIGINT <<FK>>
+    * tipo : tipo_item_cotizacion
+    * descripcion : TEXT
+    repuesto_id : BIGINT <<FK>>
+    * cantidad : INT
+    * precio_unitario : NUMERIC(12,2)
+}
+
+entity "categorias_repuesto" as categorias_repuesto {
+    * id : BIGINT <<PK>>
+    --
+    * nombre : TEXT <<UQ>>
+}
+
+entity "repuestos" as repuestos {
+    * id : BIGINT <<PK>>
+    --
+    * categoria_id : BIGINT <<FK>>
+    * nombre : TEXT
+    * stock_total : INT
+    precio_referencia : NUMERIC(12,2)
+}
+
+entity "repuesto_reservas" as repuesto_reservas {
+    * id : BIGINT <<PK>>
+    --
+    * cotizacion_item_id : BIGINT <<FK, UQ>>
+    * repuesto_id : BIGINT <<FK>>
+    * cantidad : INT
+    * estado : estado_reserva
+    * reservada_en : TIMESTAMPTZ
+    utilizada_en : TIMESTAMPTZ
+    liberada_en : TIMESTAMPTZ
+}
+
+entity "pagos" as pagos {
+    * id : BIGINT <<PK>>
+    --
+    * orden_id : BIGINT <<FK>>
+    * monto : NUMERIC(12,2)
+    * registrado_por : BIGINT <<FK>>
+    * pagado_en : TIMESTAMPTZ
+}
+
+entity "historial_estados_orden" as historial_estados_orden {
+    * id : BIGINT <<PK>>
+    --
+    * entidad_id : BIGINT <<FK>>
+    estado_anterior : estado_orden
+    * estado_nuevo : estado_orden
+    usuario_id : BIGINT <<FK>>
+    motivo : TEXT
+    * creado_en : TIMESTAMPTZ
+}
+
+entity "historial_estados_trabajo" as historial_estados_trabajo {
+    * id : BIGINT <<PK>>
+    --
+    * entidad_id : BIGINT <<FK>>
+    estado_anterior : estado_tecnico_trabajo
+    * estado_nuevo : estado_tecnico_trabajo
+    usuario_id : BIGINT <<FK>>
+    motivo : TEXT
+    * creado_en : TIMESTAMPTZ
+}
+
+clientes ||--o{ equipos
+equipos ||--o{ ordenes
+usuarios ||--o{ ordenes : "tecnico responsable"
+ordenes ||--o{ trabajos
+trabajos ||--o{ cotizaciones
+cotizaciones ||--o{ cotizacion_items
+categorias_repuesto ||--o{ repuestos
+repuestos ||--o{ cotizacion_items
+cotizacion_items ||--o| repuesto_reservas
+repuestos ||--o{ repuesto_reservas
+ordenes ||--o{ pagos
+usuarios ||--o{ pagos : "registrado_por"
+ordenes ||--o{ historial_estados_orden : "entidad_id"
+trabajos ||--o{ historial_estados_trabajo : "entidad_id"
+usuarios ||--o{ historial_estados_orden : "usuario_id"
+usuarios ||--o{ historial_estados_trabajo : "usuario_id"
+@enduml

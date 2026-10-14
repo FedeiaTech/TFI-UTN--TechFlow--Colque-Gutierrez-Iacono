@@ -38,7 +38,7 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Documenta el escenario sintético "TecnoRepair" como banco de pruebas para trabajos concurrentes y cotizaciones independientes.
 
 ### Commit 3: Requerimientos ISO 29148 y Casos de Uso
-- **Estado:** En proceso / staging
+- **Hash:** `1ef3520`
 - **Archivos:**
   - `docs/entrega-2/05-especificacion-requerimientos.md`
   - `docs/entrega-2/06-casos-de-uso-y-actores.md`
@@ -49,6 +49,19 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Matriz de trazabilidad cruzada (Problema $\rightarrow$ Regla $\rightarrow$ RF $\rightarrow$ Test).
   - Especifica los Casos de Uso del CU-01 al CU-08 con pre/postcondiciones y diagrama formal PlantUML.
 
+### Commit 4: Modelo de Dominio, Máquinas de Estado y Persistencia
+- **Estado:** En proceso / staging
+- **Archivos:**
+  - `docs/entrega-2/07-modelo-dominio-y-maquinas-estado.md`
+  - `docs/entrega-2/11-esquema-base-datos.md`
+  - `docs/entrega-2/diagramas/estados/` (`estado_orden.puml`, `estado_trabajo.puml`, `estado_reserva.puml`)
+  - `docs/entrega-2/diagramas/dominio/` (`modelo_dominio.puml`, `der_completo.puml`)
+- **Aporte clave:**
+  - Modelo conceptual de clases en PlantUML que resuelve la relación entre Orden y Trabajos independientes.
+  - Máquinas de estados finitos con matrices de transición y condiciones de guarda para Orden y Trabajos.
+  - Ciclo de reservas de repuestos (`reservada` $\rightarrow$ `utilizada` / `liberada`) y derivación determinística de saldos vía vistas SQL (`v_orden_saldo`).
+  - Documentación del esquema relacional (13 tablas, 4 vistas, índices) y catálogo de las 7 pruebas obligatorias de backend (bloqueo por saldo, monto > 0, concurrencia pesimista con stock = 1).
+
 ---
 
 ## 3. Estado del Repositorio
@@ -58,7 +71,7 @@ Rama: feature/documentacion-devolucion-2-David
 Commits completados:
   [x] Commit 1 (94c46db) - docs: estructura evidencia anonimizada de relevamiento y benchmark de mercado
   [x] Commit 2 (716fd91) - docs: formaliza caso base, variantes y escenario sintetico con diagramas de secuencia
-  [ ] Commit 3           - docs: especifica requerimientos funcionales en Gherkin y casos de uso CU-01 a CU-08
+  [x] Commit 3 (1ef3520) - docs: especifica requerimientos funcionales en Gherkin y casos de uso CU-01 a CU-08
   [ ] Commit 4           - docs: modela maquinas de estado de orden/trabajos, ciclo de reservas y DER completo
   [ ] Commit 5           - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp
   [ ] Commit 6           - docs: actualiza indices de navegacion y referencias de la 2da entrega

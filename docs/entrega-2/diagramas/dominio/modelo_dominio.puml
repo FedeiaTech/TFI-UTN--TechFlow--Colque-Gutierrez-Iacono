@@ -1,0 +1,129 @@
+@startuml modelo_dominio_techflow
+skinparam classAttributeIconSize 0
+skinparam style strictuml
+hide empty methods
+
+class Usuario {
+    +id: int
+    +nombre: string
+    +email: string
+    +password_hash: string
+    +activo: boolean
+    +creado_en: datetime
+}
+
+class Cliente {
+    +id: int
+    +nombre: string
+    +telefono: string
+    +creado_en: datetime
+}
+
+class Equipo {
+    +id: int
+    +tipo: string
+    +marca: string
+    +modelo: string
+    +numero_serie: string
+    +imei: string
+    +creado_en: datetime
+}
+
+class Orden {
+    +id: int
+    +falla_reportada: string
+    +estado_fisico_ingreso: string
+    +accesorios_entregados: string
+    +estado: EstadoOrden
+    +resultado: ResultadoOrden
+    +fecha_listo: datetime
+    +fecha_primer_aviso: datetime
+    +fecha_segundo_aviso: datetime
+    +creado_en: datetime
+}
+
+class Trabajo {
+    +id: int
+    +descripcion: string
+    +diagnostico: string
+    +estado_tecnico: EstadoTecnicoTrabajo
+    +creado_en: datetime
+}
+
+class Cotizacion {
+    +id: int
+    +numero: int
+    +estado: EstadoCotizacion
+    +motivo_rechazo: string
+    +creada_en: datetime
+    +decidida_en: datetime
+}
+
+class CotizacionItem {
+    +id: int
+    +tipo: TipoItemCotizacion
+    +descripcion: string
+    +cantidad: int
+    +precio_unitario: decimal
+}
+
+class Repuesto {
+    +id: int
+    +nombre: string
+    +stock_total: int
+    +precio_referencia: decimal
+}
+
+class CategoriaRepuesto {
+    +id: int
+    +nombre: string
+}
+
+class RepuestoReserva {
+    +id: int
+    +cantidad: int
+    +estado: EstadoReserva
+    +reservada_en: datetime
+    +utilizada_en: datetime
+    +liberada_en: datetime
+}
+
+class Pago {
+    +id: int
+    +monto: decimal
+    +pagado_en: datetime
+}
+
+class HistorialEstadoOrden {
+    +id: int
+    +estado_anterior: EstadoOrden
+    +estado_nuevo: EstadoOrden
+    +motivo: string
+    +creado_en: datetime
+}
+
+class HistorialEstadoTrabajo {
+    +id: int
+    +estado_anterior: EstadoTecnicoTrabajo
+    +estado_nuevo: EstadoTecnicoTrabajo
+    +motivo: string
+    +creado_en: datetime
+}
+
+Cliente "1" -- "0..*" Equipo : posee >
+Equipo "1" -- "0..*" Orden : ingresa en >
+Usuario "1" -- "0..*" Orden : asignado como responsable >
+Orden "1" *-- "1..*" Trabajo : se descompone en >
+Trabajo "1" *-- "0..*" Cotizacion : presupuestado en >
+Cotizacion "1" *-- "1..*" CotizacionItem : detalla >
+Repuesto "0..1" -- "0..*" CotizacionItem : referenciado en >
+CategoriaRepuesto "1" -- "0..*" Repuesto : categoriza >
+CotizacionItem "1" -- "0..1" RepuestoReserva : origina >
+Repuesto "1" -- "0..*" RepuestoReserva : bloquea >
+Orden "1" *-- "0..*" Pago : amortizada por >
+Usuario "1" -- "0..*" Pago : registra >
+Orden "1" *-- "0..*" HistorialEstadoOrden : registra auditoría >
+Trabajo "1" *-- "0..*" HistorialEstadoTrabajo : registra auditoría >
+Usuario "0..1" -- "0..*" HistorialEstadoOrden : autoriza >
+Usuario "0..1" -- "0..*" HistorialEstadoTrabajo : autoriza >
+@enduml
