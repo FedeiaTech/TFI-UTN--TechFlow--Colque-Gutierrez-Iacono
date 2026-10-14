@@ -11,7 +11,7 @@
 
 Continuando con la línea de trabajo iniciada por Fede el 10/10/2026 (diseño de base de datos relacional y esqueleto en FastAPI), el objetivo de esta jornada fue estructurar la documentación técnica y metodológica exigida por el tutor Oscar Londero en sus dos devoluciones.
 
-Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios se van integrando de forma atómica mediante commits temáticos acumulativos.
+Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios se fueron integrando de forma atómica mediante commits temáticos acumulativos.
 
 ---
 
@@ -63,7 +63,7 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Documentación del esquema relacional (13 tablas, 4 vistas, índices) y catálogo de las 7 pruebas obligatorias de backend (bloqueo por saldo, monto > 0, concurrencia pesimista con stock = 1).
 
 ### Commit 5: Arquitectura N-Capas, Principios UX, Roles y Viabilidad
-- **Estado:** En proceso / staging
+- **Hash:** `aed7c21`
 - **Archivos:**
   - `docs/entrega-2/02-propuesta-valor-y-viabilidad.md`
   - `docs/entrega-2/03-objetivos-alcance-y-modulos.md`
@@ -77,17 +77,25 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Principios UX para taller, wireframe conceptual y especificación formal de plantillas dinámicas de WhatsApp con copiado en 1 clic.
   - Organización del equipo: definición de roles entre Federico, David y Brian, matriz RACI, metodología GitFlow y plan de trabajo del vertical ejecutable.
 
+### Commit 6: Índices de Navegación, Exclusión de Guías y Cierre
+- **Estado:** En proceso / staging
+- **Archivos:**
+  - `.gitignore` (exclusión formal de guías de cátedra de uso local).
+  - `README.md` (actualización de enlaces modulares de la 2.ª entrega).
+  - `docs/entrega-2/README.md` (índice general de la 2.ª entrega con mapa modular y catálogo de diagramas PlantUML).
+- **Aporte clave:** Conecta la totalidad del repositorio haciéndolo 100% navegable desde GitHub sin enlaces rotos, preparando la rama para el Pull Request hacia `dev`.
+
 ---
 
-## 3. Estado del Repositorio
+## 3. Estado Final del Repositorio
 
 ```text
 Rama: feature/documentacion-devolucion-2-David
-Commits completados:
+Commits consolidados:
   [x] Commit 1 (94c46db) - docs: estructura evidencia anonimizada de relevamiento y benchmark de mercado
   [x] Commit 2 (716fd91) - docs: formaliza caso base, variantes y escenario sintetico con diagramas de secuencia
   [x] Commit 3 (1ef3520) - docs: especifica requerimientos funcionales en Gherkin y casos de uso CU-01 a CU-08
   [x] Commit 4 (e4b2b73) - docs: modela maquinas de estado de orden/trabajos, ciclo de reservas y DER completo
-  [ ] Commit 5           - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp
-  [ ] Commit 6           - docs: actualiza indices de navegacion y referencias de la 2da entrega
+  [x] Commit 5 (aed7c21) - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp
+  [x] Commit 6           - docs: actualiza indices de navegacion, exclusion de guias y referencias de la 2da entrega
 ```

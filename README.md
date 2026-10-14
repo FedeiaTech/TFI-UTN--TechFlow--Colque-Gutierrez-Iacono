@@ -43,12 +43,20 @@ Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: 
 | 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`docs/entrega-2/`](docs/entrega-2/) |
 | Entrega Final | 14/11/2026 | Código fuente, despliegue, documentación técnica y video |
 
-Documentos de la 2.ª entrega:
+Documentos de la 2.ª entrega (índice completo en [`docs/entrega-2/`](docs/entrega-2/README.md)):
 
-- [Caso completo de reparación](docs/entrega-2/Caso-Completo-Reparacion.md)
-- [Esquema de base de datos](docs/entrega-2/Esquema-Base-Datos.md) ([DDL](database/postgresql/schema.sql))
-- [Módulos del P0](docs/entrega-2/Modulos-P0.md)
-- [Arquitectura](docs/entrega-2/Arquitectura.md)
+- [01 — Contexto, Problemática y Relevamiento](docs/entrega-2/01-contexto-problematica-y-relevamiento.md)
+- [02 — Propuesta de Valor, Viabilidad y Criterios](docs/entrega-2/02-propuesta-valor-y-viabilidad.md)
+- [03 — Objetivos, Alcance y Módulos P0](docs/entrega-2/03-objetivos-alcance-y-modulos.md)
+- [04 — Caso Completo de Reparación y Reglas de Negocio](docs/entrega-2/04-caso-completo-reparacion.md)
+- [05 — Especificación de Requerimientos (SRS ISO 29148)](docs/entrega-2/05-especificacion-requerimientos.md)
+- [06 — Casos de Uso y Actores](docs/entrega-2/06-casos-de-uso-y-actores.md)
+- [07 — Modelo de Dominio y Máquinas de Estado](docs/entrega-2/07-modelo-dominio-y-maquinas-estado.md)
+- [08 — Diseño UX, Arquitectura de Información y Pantallas](docs/entrega-2/08-diseno-ux-y-flujos-pantalla.md)
+- [09 — Organización del Equipo y Roles](docs/entrega-2/09-roles-y-organizacion-equipo.md)
+- [10 — Arquitectura Técnica y Patrones de Diseño](docs/entrega-2/10-arquitectura-tecnica.md)
+- [11 — Esquema de Base de Datos y Persistencia](docs/entrega-2/11-esquema-base-datos.md) ([DDL](database/postgresql/schema.sql))
+- [Diagramas PlantUML editables (.puml)](docs/entrega-2/diagramas/)
 
 ## Plan de trabajo
 
