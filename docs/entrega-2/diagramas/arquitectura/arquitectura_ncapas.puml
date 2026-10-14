@@ -1,0 +1,81 @@
+@startuml arquitectura_ncapas
+skinparam style strictuml
+skinparam packageStyle rectangle
+
+package "Capa de Presentación (Frontend - SPA)" {
+    [React 18 + TypeScript (Vite)] as React
+    [Zustand (Estado Global)] as Zustand
+    [TanStack Query (Caché & HTTP)] as TanStack
+    React --> Zustand
+    React --> TanStack
+}
+
+cloud "HTTP / JSON (REST API + JWT Bearer)" as Network
+
+package "Capa de Aplicación y Dominio (Backend FastAPI)" {
+    package "Routers (Presentación Backend)" {
+        [OrdenesRouter] as R_Ord
+        [TrabajosRouter] as R_Trab
+        [CotizacionesRouter] as R_Cot
+        [PagosRouter] as R_Pag
+        [RepuestosRouter] as R_Rep
+    }
+
+    package "Schemas (DTO Pydantic)" {
+        [OrdenDTO] as DTO_Ord
+        [PagoDTO] as DTO_Pag
+        [CotizacionDTO] as DTO_Cot
+    }
+
+    package "Services (Lógica de Negocio y Reglas)" {
+        [OrdenService] as S_Ord
+        [CotizacionService] as S_Cot
+        [StockService] as S_Stock
+        [PagoService] as S_Pag
+    }
+
+    package "Repositories (Acceso a Datos)" {
+        [OrdenRepository] as Repo_Ord
+        [CotizacionRepository] as Repo_Cot
+        [RepuestoRepository] as Repo_Rep
+        [PagoRepository] as Repo_Pag
+    }
+
+    package "Core & Security" {
+        [OAuth2 + JWT Auth] as Auth
+        [Database Session (SQLAlchemy)] as DBSession
+    }
+}
+
+database "PostgreSQL (Supabase)" {
+    [Tablas Relacionales (schema.sql)] as Tablas
+    [Vistas Reactivas (v_orden_saldo, etc.)] as Vistas
+}
+
+TanStack --> Network
+Network --> R_Ord
+Network --> R_Trab
+Network --> R_Cot
+Network --> R_Pag
+Network --> R_Rep
+
+R_Ord ..> DTO_Ord : valida entrada/salida
+R_Ord --> S_Ord
+R_Trab --> S_Ord
+R_Cot --> S_Cot
+R_Pag --> S_Pag
+R_Rep --> S_Stock
+
+S_Ord --> Repo_Ord
+S_Cot --> Repo_Cot
+S_Stock --> Repo_Rep
+S_Pag --> Repo_Pag
+
+Repo_Ord --> DBSession
+Repo_Cot --> DBSession
+Repo_Rep --> DBSession
+Repo_Pag --> DBSession
+
+DBSession --> Tablas : SQL / Transacciones ACID
+DBSession --> Vistas : Consultas de saldo y stock
+@enduml
