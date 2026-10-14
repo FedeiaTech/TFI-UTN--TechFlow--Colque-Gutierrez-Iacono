@@ -26,7 +26,7 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
 - **Aporte clave:** Resuelve la observación 1 de la 1.ª devolución, blanqueando el origen de las estimaciones y aislando la evidencia empírica.
 
 ### Commit 2: Caso de Referencia, Reglas de Negocio y Diagramas de Secuencia
-- **Estado:** En proceso / staging
+- **Hash:** `716fd91`
 - **Archivos:**
   - `docs/entrega-2/04-caso-completo-reparacion.md`
   - `docs/entrega-2/diagramas/secuencia/caso_base_secuencia.puml`
@@ -37,6 +37,18 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - Establece la matriz de 10 reglas con origen explícito (`[RELEVADA]`, `[DECISIÓN DEL GRUPO]`, `[A CONFIRMAR]`).
   - Documenta el escenario sintético "TecnoRepair" como banco de pruebas para trabajos concurrentes y cotizaciones independientes.
 
+### Commit 3: Requerimientos ISO 29148 y Casos de Uso
+- **Estado:** En proceso / staging
+- **Archivos:**
+  - `docs/entrega-2/05-especificacion-requerimientos.md`
+  - `docs/entrega-2/06-casos-de-uso-y-actores.md`
+  - `docs/entrega-2/diagramas/casos_de_uso/casos_de_uso.puml`
+- **Aporte clave:**
+  - Especifica los Requerimientos Funcionales (RF) categorizados por módulo (Clientes, Equipos, Órdenes, Trabajos, Cotizaciones, Stock, Comunicación) con criterios de aceptación en formato Gherkin.
+  - Define Requerimientos No Funcionales (RNF) clave: transaccionalidad ACID, seguridad JWT, bloqueo pesimista y usabilidad.
+  - Matriz de trazabilidad cruzada (Problema $\rightarrow$ Regla $\rightarrow$ RF $\rightarrow$ Test).
+  - Especifica los Casos de Uso del CU-01 al CU-08 con pre/postcondiciones y diagrama formal PlantUML.
+
 ---
 
 ## 3. Estado del Repositorio
@@ -45,7 +57,7 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
 Rama: feature/documentacion-devolucion-2-David
 Commits completados:
   [x] Commit 1 (94c46db) - docs: estructura evidencia anonimizada de relevamiento y benchmark de mercado
-  [ ] Commit 2           - docs: formaliza caso base, variantes y escenario sintetico con diagramas de secuencia
+  [x] Commit 2 (716fd91) - docs: formaliza caso base, variantes y escenario sintetico con diagramas de secuencia
   [ ] Commit 3           - docs: especifica requerimientos funcionales en Gherkin y casos de uso CU-01 a CU-08
   [ ] Commit 4           - docs: modela maquinas de estado de orden/trabajos, ciclo de reservas y DER completo
   [ ] Commit 5           - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp

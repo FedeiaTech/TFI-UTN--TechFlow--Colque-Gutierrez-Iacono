@@ -1,0 +1,41 @@
+@startuml casos_de_uso_techflow
+left to right direction
+skinparam packageStyle rectangle
+skinparam style strictuml
+
+actor "Operador / Técnico\n(Usuario Autenticado)" as Operador
+actor "Cliente\n(Actor Externo)" as Cliente
+actor "Sistema\n(Temporizador)" as Sistema
+
+rectangle "TechFlow — Núcleo Operativo P0" {
+    usecase "CU-01: Recepción de Dispositivo\ny Apertura de Orden" as CU01
+    usecase "CU-02: Diagnóstico y Creación de Trabajo" as CU02
+    usecase "CU-03: Emisión de Cotización\ny Reserva de Repuesto" as CU03
+    usecase "CU-04: Registrar Decisión del Cliente\n(Aprobación / Rechazo)" as CU04
+    usecase "CU-05: Confirmar Uso Atómico de Repuesto\ny Terminar Trabajo" as CU05
+    usecase "CU-06: Registrar Pago de Orden" as CU06
+    usecase "CU-07: Entrega de Equipo\n(Validación Saldo = 0)" as CU07
+    usecase "CU-08: Copiar Mensaje de Estado\n(WhatsApp Asistido)" as CU08
+    usecase "CU-09: Alerta de Equipo No Retirado\n(Plazo 30 Días)" as CU09
+
+    CU01 ..> CU08 : <<extend>>
+    CU03 ..> CU08 : <<extend>>
+    CU07 ..> CU06 : <<include>>\n(si saldo > 0)
+}
+
+Operador --> CU01
+Operador --> CU02
+Operador --> CU03
+Operador --> CU04
+Operador --> CU05
+Operador --> CU06
+Operador --> CU07
+Operador --> CU08
+
+Cliente --> CU01 : Entrega equipo y manifiesta falla
+Cliente --> CU04 : Comunica aprobación/rechazo
+Cliente --> CU07 : Abona saldo y retira equipo
+
+Sistema --> CU09 : Verifica fecha_listo > 30 días
+Operador --> CU09 : Registra segundo aviso
+@enduml
