@@ -1,0 +1,93 @@
+@startuml caso_base_secuencia
+autonumber
+skinparam style strictuml
+skinparam sequenceMessageAlign center
+skinparam BoxPadding 10
+
+box "Atención y Taller" #F8F9FA
+actor "Cliente\n(María)" as Cliente
+actor "Técnico / Responsable\n(Operador)" as Tecnico
+boundary "Interfaz Web\n(TechFlow)" as UI
+end box
+
+box "Backend y Datos" #F0F4F8
+control "API / Servicios\n(FastAPI)" as API
+database "PostgreSQL\n(Supabase)" as DB
+end box
+
+== 1. Recepción del Dispositivo ==
+Cliente -> Tecnico: Presenta iPhone 12 que no carga
+Tecnico -> UI: Registra Cliente, Equipo (Serie/IMEI),\nEstado Físico ("2 rayones") y Accesorios ("Sin cargador")
+UI -> API: POST /ordenes\n(falla: "No carga", tecnico_id, estado_fisico, accesorios)
+API -> DB: INSERT INTO ordenes (estado = 'recibido')\nINSERT INTO historial_estados_orden
+DB --> API: Orden #101 creada
+API --> UI: Confirmación y Nro. de Orden
+Tecnico -> UI: Solicita comprobante / mensaje
+UI --> Tecnico: Mensaje de ingreso preparado para copiar
+
+== 2. Diagnóstico Técnico ==
+Tecnico -> Tecnico: Examina dispositivo en laboratorio:\nDescarta batería, detecta pin doblado en conector
+Tecnico -> UI: Registra Trabajo: "Reemplazo conector de carga"\ny Diagnóstico en Orden #101
+UI -> API: POST /ordenes/101/trabajos\n(descripcion, diagnostico)
+API -> DB: INSERT INTO trabajos (estado_tecnico = 'diagnosticado')\nUPDATE ordenes SET estado = 'en_proceso'\nINSERT INTO historial_estados_trabajo
+DB --> API: Trabajo #1 creado
+API --> UI: Trabajo registrado
+
+== 3. Cotización y Reserva de Repuesto ==
+Tecnico -> UI: Genera Cotización para Trabajo #1:\n- Repuesto: Conector ($5.000)\n- Mano de Obra ($3.000)
+UI -> API: POST /trabajos/1/cotizaciones
+activate API
+API -> DB: SELECT stock_total FROM repuestos\nWHERE id = conector_id FOR UPDATE
+API -> DB: INSERT INTO cotizaciones (estado = 'pendiente')
+API -> DB: INSERT INTO cotizacion_items (snapshot precio)
+API -> DB: INSERT INTO repuesto_reservas (estado = 'reservada')
+API --> UI: Cotización #1 creada (Total $8.000 en vista)
+deactivate API
+Tecnico -> UI: Clic en "Copiar Mensaje de Estado"
+UI --> Tecnico: Texto preformateado con cotización copiado al portapapeles
+Tecnico -> Cliente: Envía mensaje por WhatsApp manual
+
+== 4. Decisión del Cliente y Reparación ==
+Cliente --> Tecnico: "Hola, sí, apruebo el presupuesto"
+Tecnico -> UI: Registra Aprobación de Cotización #1
+UI -> API: PATCH /cotizaciones/1/estado (estado = 'aprobada')
+API -> DB: UPDATE cotizaciones SET estado = 'aprobada'\nUPDATE trabajos SET estado_tecnico = 'en_reparacion'\nINSERT INTO historial_estados_trabajo
+Tecnico -> Tecnico: Ejecuta reemplazo físico del pin en banco
+Tecnico -> UI: Confirma utilización del repuesto y finalización de trabajo
+UI -> API: POST /trabajos/1/confirmar-uso-y-terminar
+activate API
+note over API, DB
+  Transacción atómica obligatoria:
+  1. UPDATE repuesto_reservas (estado = 'utilizada')
+  2. UPDATE repuestos (stock_total = stock_total - 1)
+  3. UPDATE trabajos (estado_tecnico = 'terminado')
+end note
+API -> DB: Transacción ACID completada
+API --> UI: Trabajo terminado y repuesto descontado
+deactivate API
+
+== 5. Listo para Retirar ==
+API -> DB: Verifica si todos los trabajos están en estado terminal
+note right of DB: Todos los trabajos terminados ->\nUPDATE ordenes SET estado = 'listo', resultado = 'reparado'\nINSERT INTO historial_estados_orden
+Tecnico -> UI: Clic en "Copiar Mensaje: Equipo Listo"
+UI --> Tecnico: Mensaje de retiro copiado
+Tecnico -> Cliente: Envía aviso de retiro por WhatsApp
+
+== 6. Pago y Entrega ==
+Cliente -> Tecnico: Se presenta a retirar
+Tecnico -> UI: Intenta marcar Orden #101 como 'entregado'
+UI -> API: PATCH /ordenes/101/estado (nuevo_estado = 'entregado')
+API -> DB: SELECT saldo FROM v_orden_saldo WHERE orden_id = 101
+note over API: Saldo = $8.000 > 0 -> REGLA 8:\nRechaza transición con HTTP 400
+API --> UI: Error: "No se puede entregar con saldo pendiente ($8.000)"
+Tecnico -> UI: Registra pago de $8.000
+UI -> API: POST /ordenes/101/pagos (monto = 8000)
+API -> DB: INSERT INTO pagos (monto = 8000, registrado_por)
+DB --> API: Saldo recalculado = $0 en v_orden_saldo
+API --> UI: Pago registrado exitosamente
+Tecnico -> UI: Reintenta marcar como 'entregado'
+UI -> API: PATCH /ordenes/101/estado (nuevo_estado = 'entregado')
+API -> DB: UPDATE ordenes SET estado = 'entregado'\nINSERT INTO historial_estados_orden
+API --> UI: Orden cerrada exitosamente
+Tecnico -> Cliente: Entrega el iPhone 12 reparado
+@enduml

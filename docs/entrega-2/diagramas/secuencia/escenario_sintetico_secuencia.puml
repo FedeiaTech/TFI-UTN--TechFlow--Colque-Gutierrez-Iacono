@@ -1,0 +1,74 @@
+@startuml escenario_sintetico_secuencia
+autonumber
+skinparam style strictuml
+skinparam sequenceMessageAlign center
+
+box "Atención y Taller" #F8F9FA
+actor "Cliente\n(María)" as Cliente
+actor "Técnico" as Tecnico
+boundary "UI TechFlow" as UI
+end box
+
+box "Backend y Base de Datos" #F0F4F8
+control "API REST" as API
+database "PostgreSQL" as DB
+end box
+
+== Día 1: Ingreso y Trabajo 1 ==
+Cliente -> Tecnico: Trae iPhone 12 que no carga
+Tecnico -> UI: Crea Orden #201 y Trabajo 1 ("Conector") con Cotización 1 ($8.000)
+UI -> API: Cotización 1 creada -> Reserva Conector (estado: 'reservada')
+Cliente --> Tecnico: Aprueba Cotización 1 -> Trabajo 1 pasa a 'en_reparacion'
+
+== Día 2: Falla Adicional y Trabajo 2 (Esperando Repuesto) ==
+Cliente -> Tecnico: "Además parpadea la pantalla, ¿lo revisan?"
+Tecnico -> UI: Agrega Trabajo 2 ("Pantalla") a Orden #201
+UI -> API: POST /ordenes/201/trabajos (falla: "Pantalla parpadea")
+API -> DB: INSERT INTO trabajos -> Trabajo 2 ('diagnosticado')
+note over Tecnico, UI
+  Regla 3: El nuevo trabajo NO bloquea
+  el Trabajo 1 que ya está en reparación
+end note
+Tecnico -> UI: Genera Cotización Trabajo 2 ($35.000 - requiere flex)
+Cliente --> Tecnico: Aprueba Cotización Trabajo 2
+Tecnico -> UI: Registra aprobación. Falta stock de flex en pañol.
+UI -> API: PATCH /trabajos/2/estado ('esperando_repuesto')
+note over DB
+  En este momento en la Orden #201:
+  - Orden: estado 'en_proceso'
+  - Trabajo 1: 'en_reparacion'
+  - Trabajo 2: 'esperando_repuesto'
+  El modelo soporta estados disímiles sin conflicto.
+end note
+
+== Día 3: Ingreso de Flex y Trabajo 3 (Falla Nueva en Prueba) ==
+Tecnico -> UI: Ingresa repuesto flex al pañol.
+Tecnico -> UI: Confirma uso de repuesto flex para Trabajo 2
+UI -> API: Transacción atómica: reserva utilizada + decremento de stock
+Tecnico -> UI: Finaliza Trabajo 1 y Trabajo 2 ('terminado')
+Tecnico -> Tecnico: Prueba final: altavoz suena distorsionado
+Tecnico -> UI: Agrega Trabajo 3 ("Altavoz") con Cotización 3 ($12.000)
+Cliente --> Tecnico: "No, el altavoz déjelo así, no llego con el dinero"
+Tecnico -> UI: Registra RECHAZO de Cotización 3 (motivo: "Costo elevado")
+UI -> API: PATCH /cotizaciones/3/estado ('rechazada', motivo)
+API -> DB: UPDATE cotizaciones SET estado = 'rechazada'\nUPDATE repuesto_reservas SET estado = 'liberada'\nUPDATE trabajos SET estado_tecnico = 'cancelado'
+note right of DB: La reserva del altavoz se LIBERA inmediatamente.\nEl stock vuelve a estar disponible para otros trabajos.
+
+== Cierre de Orden con Resultado Parcial ==
+API -> DB: Evalúa estados terminales de Orden #201:
+note right of DB
+  Trabajo 1: terminado
+  Trabajo 2: terminado
+  Trabajo 3: cancelado
+  Todos en estado terminal ->
+  UPDATE ordenes SET estado = 'listo', resultado = 'parcial'
+end note
+Tecnico -> UI: Consulta saldo de la orden
+UI -> API: GET /ordenes/201/saldo (consulta v_orden_saldo)
+note over API: Total Aprobado: $8.000 (Trabajo 1) + $35.000 (Trabajo 2) = $43.000\n(Trabajo 3 rechazado no suma monto)
+Cliente -> Tecnico: Abona $43.000 en mostrador
+Tecnico -> UI: Registra pago de $43.000 -> Saldo = $0
+Tecnico -> UI: Marca Orden #201 como 'entregado'
+UI -> API: Validación de saldo = 0 -> OK -> Transición a 'entregado'
+Tecnico -> Cliente: Entrega el equipo con comprobante final
+@enduml
