@@ -11,7 +11,9 @@ El diseño del dominio de TechFlow responde a la necesidad de resolver la incons
 4. **Desacople entre Estado Técnico y Financiero:** La orden no posee un campo editable de cobro. Los pagos son transacciones independientes, y el saldo deudor se calcula de forma reactiva y determinística.
 
 ### 1.2. Diagrama de Clases del Dominio
-El diagrama conceptual en sintaxis PlantUML se encuentra versionado en [`diagramas/dominio/modelo_dominio.puml`](diagramas/dominio/modelo_dominio.puml).
+![Diagrama de clases del dominio](diagramas/dominio/modelo_dominio.png)
+
+Fuente editable en [`diagramas/dominio/modelo_dominio.puml`](diagramas/dominio/modelo_dominio.puml).
 
 ---
 
@@ -32,7 +34,9 @@ La orden mantiene un estado global deliberadamente simple, cuya función es refl
                                                    └───────────────────┘
 ```
 
-El diagrama de estados formal se ubica en [`diagramas/estados/estado_orden.puml`](diagramas/estados/estado_orden.puml).
+![Máquina de estados de la Orden](diagramas/estados/estado_orden.png)
+
+Fuente editable en [`diagramas/estados/estado_orden.puml`](diagramas/estados/estado_orden.puml).
 
 ### 2.1. Matriz de Transiciones de la Orden
 
@@ -50,7 +54,9 @@ El diagrama de estados formal se ubica en [`diagramas/estados/estado_orden.puml`
 
 Cada trabajo técnico describe la evolución de una intervención física en banco:
 
-El diagrama de estados formal se ubica en [`diagramas/estados/estado_trabajo.puml`](diagramas/estados/estado_trabajo.puml).
+![Máquina de estados del Trabajo técnico](diagramas/estados/estado_trabajo.png)
+
+Fuente editable en [`diagramas/estados/estado_trabajo.puml`](diagramas/estados/estado_trabajo.puml).
 
 ### 3.1. Matriz de Transiciones del Trabajo
 
@@ -84,7 +90,9 @@ $$\mathbf{Cotizaciones\ Adicionales\ Independientes\ por\ Trabajo}$$
 - El total general liquidable de la orden es la sumatoria de las cotizaciones aprobadas de sus trabajos.
 
 ### 4.2. Ciclo de Vida de las Reservas (`repuesto_reservas`)
-El diagrama formal se ubica en [`diagramas/estados/estado_reserva.puml`](diagramas/estados/estado_reserva.puml).
+![Ciclo de vida de las reservas de pañol](diagramas/estados/estado_reserva.png)
+
+Fuente editable en [`diagramas/estados/estado_reserva.puml`](diagramas/estados/estado_reserva.puml).
 
 ```text
                     [Cotización emitida]

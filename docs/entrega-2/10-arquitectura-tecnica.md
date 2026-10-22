@@ -4,7 +4,9 @@
 
 TechFlow adopta una **Arquitectura Cliente-Servidor de N-Capas (Layered Architecture)**, con desacoplamiento físico entre la aplicación cliente (Frontend SPA) y el servidor de aplicaciones (Backend API REST), comunicados exclusivamente mediante el protocolo HTTPS transportando datos en formato JSON.
 
-El diagrama formal de componentes se encuentra en [`diagramas/arquitectura/arquitectura_ncapas.puml`](diagramas/arquitectura/arquitectura_ncapas.puml).
+![Diagrama de componentes y capas](diagramas/arquitectura/arquitectura_ncapas.png)
+
+Fuente editable en [`diagramas/arquitectura/arquitectura_ncapas.puml`](diagramas/arquitectura/arquitectura_ncapas.puml).
 
 ```text
 ┌────────────────────────────────────────────────────────┐
@@ -101,7 +103,9 @@ En respuesta a la 2.ª Devolución (*"OAuth2 + JWT pero no existe entidad de usu
 
 ## 6. Diagrama de Despliegue en la Nube
 
-El diagrama formal de despliegue cloud se ubica en [`diagramas/arquitectura/despliegue.puml`](diagramas/arquitectura/despliegue.puml).
+![Diagrama de despliegue en la nube](diagramas/arquitectura/despliegue.png)
+
+Fuente editable en [`diagramas/arquitectura/despliegue.puml`](diagramas/arquitectura/despliegue.puml).
 
 ```text
 [ Navegador Web ]

@@ -16,7 +16,9 @@ En la etapa de alcance P0, el sistema interactúa con tres actores clave:
 
 ## 2. Diagrama de Casos de Uso del Núcleo P0
 
-El modelo formal de casos de uso se encuentra implementado en sintaxis PlantUML en [`diagramas/casos_de_uso/casos_de_uso.puml`](diagramas/casos_de_uso/casos_de_uso.puml).
+![Diagrama de casos de uso del núcleo P0](diagramas/casos_de_uso/casos_de_uso.png)
+
+Fuente editable en [`diagramas/casos_de_uso/casos_de_uso.puml`](diagramas/casos_de_uso/casos_de_uso.puml).
 
 ---
 

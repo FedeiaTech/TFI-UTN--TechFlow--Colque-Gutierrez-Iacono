@@ -72,7 +72,10 @@ El caso representa la dinámica habitual de un microtaller donde una única pers
    - El sistema habilita la transición: la Orden #101 pasa a `entregado`. Se registra la salida en el historial y concluye el ciclo.
 
 ### 2.2. Diagrama de Secuencia del Caso Base
-El diagrama formal en sintaxis PlantUML se encuentra versionado en [`diagramas/secuencia/caso_base_secuencia.puml`](diagramas/secuencia/caso_base_secuencia.puml).
+
+![Diagrama de secuencia del caso base](diagramas/secuencia/caso_base_secuencia.png)
+
+Fuente editable en [`diagramas/secuencia/caso_base_secuencia.puml`](diagramas/secuencia/caso_base_secuencia.puml).
 
 ---
 
@@ -154,4 +157,6 @@ Atiende el dolor relevado en campo respecto de aparatos que quedan inmovilizados
     - Saldo a cobrar: $43.000.
   - María abona los $43.000 en el local. Se registra el pago, el saldo queda en $0 y la orden se entrega con éxito.
 
-El diagrama formal de secuencia de este escenario sintético se encuentra en [`diagramas/secuencia/escenario_sintetico_secuencia.puml`](diagramas/secuencia/escenario_sintetico_secuencia.puml).
+![Diagrama de secuencia del escenario sintético](diagramas/secuencia/escenario_sintetico_secuencia.png)
+
+Fuente editable en [`diagramas/secuencia/escenario_sintetico_secuencia.puml`](diagramas/secuencia/escenario_sintetico_secuencia.puml).

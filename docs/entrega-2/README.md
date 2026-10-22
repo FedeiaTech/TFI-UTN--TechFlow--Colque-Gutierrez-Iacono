@@ -24,20 +24,22 @@ La totalidad de los documentos ha sido diseñada respondiendo punto por punto a 
 
 ---
 
-## 🎨 Diagramas PlantUML Disponibles (Directorio `diagramas/`)
+## 🎨 Diagramas Disponibles (Directorio `diagramas/`)
 
-Todos los diagramas han sido generados en formato editable `.puml` organizados por tipo:
+Cada diagrama tiene su fuente editable en PlantUML (`.puml`) y su render ya generado (`.png`), para que se vean directo en GitHub sin instalar nada:
 
-1. [`diagramas/secuencia/caso_base_secuencia.puml`](diagramas/secuencia/caso_base_secuencia.puml): Secuencia completa del caso base lineal (María y el iPhone 12).
-2. [`diagramas/secuencia/escenario_sintetico_secuencia.puml`](diagramas/secuencia/escenario_sintetico_secuencia.puml): Secuencia del escenario multi-trabajo con falla nueva y rechazo parcial.
-3. [`diagramas/casos_de_uso/casos_de_uso.puml`](diagramas/casos_de_uso/casos_de_uso.puml): Diagrama de casos de uso del núcleo operativo P0.
-4. [`diagramas/dominio/modelo_dominio.puml`](diagramas/dominio/modelo_dominio.puml): Diagrama de clases del modelo conceptual de dominio.
-5. [`diagramas/estados/estado_orden.puml`](diagramas/estados/estado_orden.puml): Máquina de estados finitos de la Orden de Trabajo.
-6. [`diagramas/estados/estado_trabajo.puml`](diagramas/estados/estado_trabajo.puml): Máquina de estados técnicos del Trabajo.
-7. [`diagramas/estados/estado_reserva.puml`](diagramas/estados/estado_reserva.puml): Ciclo de vida de las reservas de pañol.
-8. [`diagramas/dominio/der_completo.puml`](diagramas/dominio/der_completo.puml): Diagrama Entidad-Relación (DER) de todas las tablas y claves foráneas.
-9. [`diagramas/arquitectura/arquitectura_ncapas.puml`](diagramas/arquitectura/arquitectura_ncapas.puml): Diagrama de componentes y capas lógicas (Frontend, Backend, Persistencia).
-10. [`diagramas/arquitectura/despliegue.puml`](diagramas/arquitectura/despliegue.puml): Diagrama de despliegue en la infraestructura cloud (Vercel, Render, Supabase).
+1. [`diagramas/secuencia/caso_base_secuencia.png`](diagramas/secuencia/caso_base_secuencia.png) ([fuente](diagramas/secuencia/caso_base_secuencia.puml)): Secuencia completa del caso base lineal (María y el iPhone 12).
+2. [`diagramas/secuencia/escenario_sintetico_secuencia.png`](diagramas/secuencia/escenario_sintetico_secuencia.png) ([fuente](diagramas/secuencia/escenario_sintetico_secuencia.puml)): Secuencia del escenario multi-trabajo con falla nueva y rechazo parcial.
+3. [`diagramas/casos_de_uso/casos_de_uso.png`](diagramas/casos_de_uso/casos_de_uso.png) ([fuente](diagramas/casos_de_uso/casos_de_uso.puml)): Diagrama de casos de uso del núcleo operativo P0.
+4. [`diagramas/dominio/modelo_dominio.png`](diagramas/dominio/modelo_dominio.png) ([fuente](diagramas/dominio/modelo_dominio.puml)): Diagrama de clases del modelo conceptual de dominio.
+5. [`diagramas/estados/estado_orden.png`](diagramas/estados/estado_orden.png) ([fuente](diagramas/estados/estado_orden.puml)): Máquina de estados finitos de la Orden de Trabajo.
+6. [`diagramas/estados/estado_trabajo.png`](diagramas/estados/estado_trabajo.png) ([fuente](diagramas/estados/estado_trabajo.puml)): Máquina de estados técnicos del Trabajo.
+7. [`diagramas/estados/estado_reserva.png`](diagramas/estados/estado_reserva.png) ([fuente](diagramas/estados/estado_reserva.puml)): Ciclo de vida de las reservas de pañol.
+8. [`diagramas/dominio/der_completo.png`](diagramas/dominio/der_completo.png) ([fuente](diagramas/dominio/der_completo.puml)): Diagrama Entidad-Relación (DER) de todas las tablas y claves foráneas.
+9. [`diagramas/arquitectura/arquitectura_ncapas.png`](diagramas/arquitectura/arquitectura_ncapas.png) ([fuente](diagramas/arquitectura/arquitectura_ncapas.puml)): Diagrama de componentes y capas lógicas (Frontend, Backend, Persistencia).
+10. [`diagramas/arquitectura/despliegue.png`](diagramas/arquitectura/despliegue.png) ([fuente](diagramas/arquitectura/despliegue.puml)): Diagrama de despliegue en la infraestructura cloud (Vercel, Render, Supabase).
+
+> Si editan un `.puml`, regeneren el `.png` correspondiente (`java -jar plantuml.jar -tpng archivo.puml`) antes de commitear, para que no queden desincronizados.
 
 ---
 
