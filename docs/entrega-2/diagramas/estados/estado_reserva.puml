@@ -1,0 +1,12 @@
+@startuml estado_reserva
+skinparam style strictuml
+
+[*] --> reservada : Se emite cotización pendiente con ítem repuesto\n[Bloqueo SELECT ... FOR UPDATE y disponible >= cantidad]
+
+reservada --> utilizada : Técnico confirma reparación\n[Transacción atómica: reserva utilizada y stock_total decrementado]
+
+reservada --> liberada : Cotización rechazada / Trabajo cancelado / Decisión manual\n[Restaura disponibilidad inmediata en v_repuesto_disponibilidad]
+
+utilizada --> [*]
+liberada --> [*]
+@enduml

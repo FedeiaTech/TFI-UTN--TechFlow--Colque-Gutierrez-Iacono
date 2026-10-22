@@ -1,0 +1,23 @@
+@startuml despliegue_cloud
+skinparam style strictuml
+
+node "Dispositivo Cliente" {
+    artifact "Navegador Web\n(Chrome, Firefox, Safari)" as Browser
+}
+
+node "Vercel Platform (CDN Edge)" {
+    component "Frontend SPA\n(React 18 + TS Bundled)" as VercelApp
+}
+
+node "Render Cloud (PaaS)" {
+    component "Backend Web Service\n(FastAPI + Uvicorn + Python 3.11)" as RenderApp
+}
+
+node "Supabase Platform (DB as a Service)" {
+    database "PostgreSQL 15+\n(schema.sql con vistas e índices)" as SupabaseDB
+}
+
+Browser --> VercelApp : HTTPS (Carga de assets estáticos)
+Browser --> RenderApp : HTTPS / JSON REST API\n(Header: Authorization Bearer JWT)
+RenderApp --> SupabaseDB : TCP / SSL Pooler (Puerto 5432 / 6543)\nSQLAlchemy 2.x + psycopg 3
+@enduml

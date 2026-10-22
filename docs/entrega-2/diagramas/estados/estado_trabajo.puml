@@ -1,0 +1,24 @@
+@startuml estado_trabajo
+skinparam style strictuml
+
+[*] --> pendiente_diagnostico : Trabajo creado
+
+pendiente_diagnostico --> diagnosticado : Técnico asienta diagnóstico
+
+diagnosticado --> esperando_repuesto : Falta stock en pañol
+diagnosticado --> en_reparacion : Cliente aprueba cotización\ny hay repuestos disponibles
+
+esperando_repuesto --> en_reparacion : Ingresa repuesto / confirmado
+
+en_reparacion --> terminado : Reparación física exitosa\n(Confirma uso y descuenta stock)
+
+diagnosticado --> cancelado : Cliente rechaza cotización\n(Motivo registrado / Libera reserva)
+
+en_reparacion --> irreparable : Daño irreparable detectado\nen proceso de trabajo
+
+diagnosticado --> irreparable : Diagnóstico concluye inviabilidad técnica
+
+terminado --> [*]
+cancelado --> [*]
+irreparable --> [*]
+@enduml
