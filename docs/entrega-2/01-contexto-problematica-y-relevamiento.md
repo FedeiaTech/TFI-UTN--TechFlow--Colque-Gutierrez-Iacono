@@ -74,7 +74,7 @@ A través de la triangulación de las respuestas se extraen los cinco problemas 
 
 ## 5. Análisis Comparativo con Soluciones del Mercado (Benchmarking)
 
-Para comprender el estándar actual en el mercado nacional y regional, se listaron algunas herramientas orientadas a talleres de reparación de electrónica (Loop, STApp, SAT Network, Sistema Uno). **Es un relevamiento preliminar a partir de una búsqueda web: todavía no probamos las herramientas ni verificamos sus funcionalidades [A VERIFICAR].**
+Para comprender el estándar actual en el mercado nacional y regional, se identificaron algunas herramientas orientadas a talleres de reparación de electrónica, confirmando su existencia real mediante sus sitios públicos: **SGTaller** (Argentina, gestión de servicio técnico con campos específicos para celulares como batería, chip e IMEI), **RepairDesk** (tickets de reparación, inventario, CRM y facturación), **OpenRMA** (seguimiento de reparaciones para PC y celulares) y **Appli-Car** (presupuestos por WhatsApp y portal de seguimiento, mercado Chile/Colombia/Argentina). **Relevamiento a partir de sus sitios públicos: se confirmó su existencia y alcance declarado, pero no se probaron en uso real [A VERIFICAR funcionalidades en profundidad].**
 
 | Dimensión | Enfoque Genérico / Competencia Comercial | Enfoque TechFlow (TFI UTN) | Justificación Académica y Operativa |
 |---|---|---|---|
