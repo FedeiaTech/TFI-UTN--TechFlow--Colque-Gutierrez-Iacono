@@ -114,7 +114,7 @@ Fuente editable en [`diagramas/arquitectura/despliegue.puml`](diagramas/arquitec
        │
        └──► HTTPS / JSON (API REST) ───────► [ Render: FastAPI + Uvicorn ]
                                                     │
-                                                    ▼ TCP / SSL Pooler (6543)
+                                                    ▼ TCP / SSL Session Pooler (5432)
                                              [ Supabase: PostgreSQL ]
 ```
 

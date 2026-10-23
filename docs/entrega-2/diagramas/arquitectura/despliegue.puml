@@ -19,5 +19,5 @@ node "Supabase Platform (DB as a Service)" {
 
 Browser --> VercelApp : HTTPS (Carga de assets estáticos)
 Browser --> RenderApp : HTTPS / JSON REST API\n(Header: Authorization Bearer JWT)
-RenderApp --> SupabaseDB : TCP / SSL Pooler (Puerto 5432 / 6543)\nSQLAlchemy 2.x + psycopg 3
+RenderApp --> SupabaseDB : TCP / SSL Session Pooler (Puerto 5432)\nSQLAlchemy 2.x + psycopg 3
 @enduml
