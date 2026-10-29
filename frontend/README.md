@@ -1,42 +1,75 @@
-# Frontend — TechFlow
+# React + TypeScript + Vite
 
-> Este directorio contendrá la aplicación frontend a partir de la etapa de implementación (Entrega Final).
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Stack
+Currently, two official plugins are available:
 
-- **React 18** + **TypeScript** (via Vite)
-- **Tailwind CSS** para estilos
-- **Zustand** para estado global
-- **TanStack** (Query, Table, Form) para data fetching, tablas y formularios
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-## Estructura prevista
+## React Compiler
 
-```text
-frontend/
-├── src/
-│   ├── components/     — componentes reutilizables
-│   ├── pages/          — páginas/vistas de la aplicación
-│   ├── services/       — llamadas a la API REST
-│   ├── store/          — estado global (Zustand)
-│   ├── types/          — tipos e interfaces TypeScript
-│   └── utils/          — funciones utilitarias
-├── public/
-├── package.json
-├── vite.config.ts
-├── tailwind.config.js
-└── tsconfig.json
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+
+```js
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+
+      // Remove tseslint.configs.recommended and replace with this
+      tseslint.configs.recommendedTypeChecked,
+      // Alternatively, use this for stricter rules
+      tseslint.configs.strictTypeChecked,
+      // Optionally, add this for stylistic rules
+      tseslint.configs.stylisticTypeChecked,
+
+      // Other configs...
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
+
 ```
 
-## Hosting
+You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
 
-Vercel (deploy automático desde GitHub).
+```js
+// eslint.config.js
+import reactX from 'eslint-plugin-react-x'
+import reactDom from 'eslint-plugin-react-dom'
 
----
+export default defineConfig([
+  globalIgnores(['dist']),
+  {
+    files: ['**/*.{ts,tsx}'],
+    extends: [
+      // Other configs...
+      // Enable lint rules for React
+      reactX.configs['recommended-typescript'],
+      // Enable lint rules for React DOM
+      reactDom.configs.recommended,
+    ],
+    languageOptions: {
+      parserOptions: {
+        project: ['./tsconfig.node.json', './tsconfig.app.json'],
+        tsconfigRootDir: import.meta.dirname,
+      },
+      // other options...
+    },
+  },
+])
 
-> **Enfoque de implementación**: el modelo se valida construyendo. Se modela, se implementa un recorrido pequeño, se comprueba, se corrige el modelo y se continúa. No se espera a una aprobación total del diseño para empezar a codificar.
->
-> **Primer objetivo**: una vertical ejecutable cliente → equipo → orden → diagnóstico → cotización → aprobación → reserva → reparación → listo → pago → entrega.
->
-> **Segundo objetivo**: una segunda situación con trabajo adicional durante la reparación (nueva falla, nuevo trabajo y cotización independiente).
->
-> El esquema vigente está en [`database/postgresql/schema.sql`](../database/postgresql/schema.sql). Las pruebas de backend obligatorias están en [`docs/entrega-2/Esquema-Base-Datos.md`](../docs/entrega-2/Esquema-Base-Datos.md).
+```
