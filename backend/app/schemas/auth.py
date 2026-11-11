@@ -12,4 +12,5 @@ class TokenResponse(BaseModel):
 
 
 class TokenData(BaseModel):
+    usuario_id: int | None = None
     email: str | None = None
