@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: techflow-api
+    runtime: python
+    plan: free
+    rootDir: backend
+    branch: dev
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.13.3
+      # Session pooler de Supabase (puerto 5432). Se carga a mano en el
+      # dashboard de Render: nunca se versiona.
+      - key: DATABASE_URL
+        sync: false
