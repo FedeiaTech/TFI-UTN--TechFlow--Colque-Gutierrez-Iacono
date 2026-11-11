@@ -1,110 +1,215 @@
+"""Suite de pruebas obligatorias para reglas de negocio P0 (Brian).
+Cubre:
+1. Monto de pago mayor a cero (HTTP 422).
+2. Bloqueo de entrega con saldo pendiente (HTTP 400).
+3. Reserva de repuesto sin disponibilidad suficiente (HTTP 400).
+4. Concurrencia: dos reservas simultáneas sobre stock = 1 (solo una pasa).
+"""
+
+import os
+import threading
 import pytest
-from decimal import Decimal
-from fastapi import HTTPException
+from fastapi.testclient import TestClient
+from sqlalchemy import insert
+from sqlalchemy.orm import Session
 
-# Simulación / pruebas sobre las reglas de negocio críticas definidas en el P0
+from app.database.session import get_engine
+from app.main import app
+from app.models import CategoriaRepuesto, Repuesto, Usuario
 
-def test_pago_monto_debe_ser_mayor_a_cero():
-    """Valida que no se permitan registrar pagos con montos menores o iguales a 0."""
-    monto_invalido_cero = Decimal("0.00")
-    monto_invalido_negativo = Decimal("-1500.00")
-    
-    # Regla: Si monto <= 0 debe arrojar ValueError o HTTPException 400
-    with pytest.raises((ValueError, HTTPException)):
-        if monto_invalido_cero <= 0:
-            raise HTTPException(status_code=400, detail="El monto del pago debe ser mayor a cero.")
+pytestmark = pytest.mark.skipif(not os.environ.get("DATABASE_URL"), reason="DATABASE_URL not set")
 
-    with pytest.raises((ValueError, HTTPException)):
-        if monto_invalido_negativo <= 0:
-            raise HTTPException(status_code=400, detail="El monto del pago debe ser mayor a cero.")
+client = TestClient(app)
 
 
-def test_bloqueo_entrega_con_saldo_pendiente():
-    """Valida que una orden en estado 'listo' no pueda entregarse si resta abonar saldo."""
-    total_reparacion = Decimal("15000.00")
-    total_pagado = Decimal("10000.00")
-    saldo_pendiente = total_reparacion - total_pagado
-    
-    estado_orden = "listo"
-    accion_solicitada = "entregar"
-
-    with pytest.raises(HTTPException) as exc_info:
-        # Regla: Si saldo_pendiente > 0 no se permite transición a 'entregado'
-        if accion_solicitada == "entregar" and saldo_pendiente > 0:
-            raise HTTPException(
-                status_code=400, 
-                detail=f"No se puede entregar la orden. Saldo pendiente: ${saldo_pendiente}"
+@pytest.fixture
+def usuario_id() -> int:
+    with Session(get_engine()) as session:
+        result = session.execute(
+            insert(Usuario)
+            .values(
+                nombre="Técnico de prueba reglas",
+                email=f"tecnico-reglas-{os.urandom(4).hex()}@test.local",
+                password_hash="x",
             )
-            
-    assert exc_info.value.status_code == 400
-    assert "Saldo pendiente" in exc_info.value.detail
+            .returning(Usuario.id)
+        )
+        new_id = result.scalar_one()
+        session.commit()
+        return new_id
 
 
-def test_reserva_stock_repuesto_sin_disponibilidad():
-    """Valida que no se pueda reservar o descontar un repuesto si el stock disponible es insuficiente."""
-    stock_actual = 1
-    cantidad_requerida = 2
-
-    with pytest.raises(HTTPException) as exc_info:
-        # Regla: stock_disponible >= cantidad_solicitada
-        if cantidad_requerida > stock_actual:
-            raise HTTPException(
-                status_code=400, 
-                detail="Stock insuficiente para realizar la reserva del repuesto."
+@pytest.fixture
+def repuesto_stock_uno_id() -> int:
+    with Session(get_engine()) as session:
+        categoria_id = session.execute(
+            insert(CategoriaRepuesto)
+            .values(nombre=f"Cat reglas {os.urandom(4).hex()}")
+            .returning(CategoriaRepuesto.id)
+        ).scalar_one()
+        new_id = session.execute(
+            insert(Repuesto)
+            .values(
+                nombre="Pin de carga stock 1",
+                categoria_id=categoria_id,
+                stock_total=1,
+                precio_referencia=5000,
             )
+            .returning(Repuesto.id)
+        ).scalar_one()
+        session.commit()
+        return new_id
 
 
+def _crear_orden_y_trabajo(usuario_id: int):
+    """Crea cliente, equipo, orden y trabajo diagnosticado listo para cotizar."""
+    cli = client.post("/api/v1/clientes", json={"nombre": "Cliente Reglas", "telefono": "11-4444-4444"})
+    assert cli.status_code == 201
+    cliente_id = cli.json()["id"]
 
-    assert exc_info.value.status_code == 400
-    assert "Stock insuficiente" in exc_info.value.detail
+    eq = client.post(
+        f"/api/v1/clientes/{cliente_id}/equipos",
+        json={"tipo": "celular", "marca": "Motorola", "modelo": "G52", "numero_serie": f"SN-{os.urandom(3).hex()}"},
+    )
+    assert eq.status_code == 201
+    equipo_id = eq.json()["id"]
 
-def test_nueva_falla_durante_reparacion_no_altera_trabajo_aprobado():
+    ord_resp = client.post(
+        "/api/v1/ordenes",
+        json={
+            "equipo_id": equipo_id,
+            "tecnico_id": usuario_id,
+            "falla_reportada": "Falla de prueba reglas",
+            "estado_fisico_ingreso": "Bueno",
+        },
+    )
+    assert ord_resp.status_code == 201
+    orden_id = ord_resp.json()["id"]
+
+    trab = client.post(
+        f"/api/v1/ordenes/{orden_id}/trabajos",
+        params={"usuario_id": usuario_id},
+        json={"descripcion": "Reparación técnica"},
+    )
+    assert trab.status_code == 201
+    trabajo_id = trab.json()["id"]
+
+    diag = client.patch(
+        f"/api/v1/ordenes/trabajos/{trabajo_id}/diagnosticar",
+        params={"usuario_id": usuario_id},
+        json={"diagnostico": "Revisado ok"},
+    )
+    assert diag.status_code == 200
+
+    return orden_id, trabajo_id
+
+
+def test_regla_pago_monto_debe_ser_mayor_a_cero():
+    """Valida que la API rechace pagos con monto <= 0 devolviendo 422."""
+    response = client.post("/api/v1/ordenes/1/pagos", json={"monto": 0})
+    assert response.status_code == 422
+
+
+def test_regla_bloqueo_entrega_con_saldo_pendiente(usuario_id: int, repuesto_stock_uno_id: int):
+    """Valida que no se pueda entregar una orden con saldo pendiente (HTTP 400)."""
+    orden_id, trabajo_id = _crear_orden_y_trabajo(usuario_id)
+
+    # Cotizar
+    cot = client.post(
+        f"/api/v1/trabajos/{trabajo_id}/cotizaciones",
+        params={"usuario_id": usuario_id},
+        json={
+            "items": [
+                {
+                    "tipo": "repuesto",
+                    "descripcion": "Repuesto prueba",
+                    "repuesto_id": repuesto_stock_uno_id,
+                    "cantidad": 1,
+                    "precio_unitario": "10000.00",
+                }
+            ]
+        },
+    )
+    assert cot.status_code == 201
+    cotizacion_id = cot.json()["id"]
+
+    # Aprobar cotización
+    dec = client.patch(
+        f"/api/v1/cotizaciones/{cotizacion_id}/decidir",
+        params={"usuario_id": usuario_id},
+        json={"aprobar": True},
+    )
+    assert dec.status_code == 200
+
+    # Confirmar uso -> pasa la orden a 'listo'
+    conf = client.post(f"/api/v1/trabajos/{trabajo_id}/confirmar-uso", params={"usuario_id": usuario_id})
+    assert conf.status_code == 204
+
+    # Intentar entregar con saldo pendiente -> HTTP 400
+    entrega = client.patch(f"/api/v1/ordenes/{orden_id}/entregar", params={"usuario_id": usuario_id})
+    assert entrega.status_code == 400
+    assert "saldo pendiente" in entrega.json()["detail"].lower()
+
+
+def test_regla_reserva_repuesto_sin_disponibilidad(usuario_id: int, repuesto_stock_uno_id: int):
+    """Valida el rechazo (HTTP 400) cuando la cantidad pedida supera la disponibilidad del repuesto."""
+    _, trabajo_id = _crear_orden_y_trabajo(usuario_id)
+
+    # El repuesto tiene stock 1, solicitamos 5 unidades
+    response = client.post(
+        f"/api/v1/trabajos/{trabajo_id}/cotizaciones",
+        params={"usuario_id": usuario_id},
+        json={
+            "items": [
+                {
+                    "tipo": "repuesto",
+                    "descripcion": "Repuesto excede stock",
+                    "repuesto_id": repuesto_stock_uno_id,
+                    "cantidad": 5,
+                    "precio_unitario": "5000.00",
+                }
+            ]
+        },
+    )
+    assert response.status_code == 400
+    assert "disponibilidad" in response.json()["detail"].lower()
+
+
+def test_regla_concurrencia_dos_reservas_simultaneas_stock_uno(usuario_id: int, repuesto_stock_uno_id: int):
+    """Regla exigida por Oscar:
+    Stock = 1 -> dos hilos concurrentes intentan reservar -> solo uno tiene éxito.
     """
-    Validación corrección 2.ª Entrega:
-    Durante la reparación aparece una nueva falla y se genera un trabajo adicional
-    sin alterar lo que ya estaba aprobado ni el saldo exigible vigente.
-    """
-    # 1. Trabajo inicial aprobado
-    trabajos_orden = [
-        {
-            "id": 1,
-            "descripcion": "Cambio de módulo conector de carga",
-            "costo_mano_obra": 15000.0,
-            "costo_repuesto": 10000.0,
-            "estado": "APROBADO"
-        }
-    ]
-    
-    total_aprobado_inicial = sum(
-        t["costo_mano_obra"] + t["costo_repuesto"] 
-        for t in trabajos_orden if t["estado"] == "APROBADO"
-    )
-    assert total_aprobado_inicial == 25000.0
+    _, trabajo_id_1 = _crear_orden_y_trabajo(usuario_id)
+    _, trabajo_id_2 = _crear_orden_y_trabajo(usuario_id)
 
-    # 2. Se detecta falla adicional durante la reparación
-    nuevo_trabajo_adicional = {
-        "id": 2,
-        "descripcion": "Cambio de batería por falla oculta",
-        "costo_mano_obra": 5000.0,
-        "costo_repuesto": 18000.0,
-        "estado": "PENDIENTE_APROBACION"
-    }
-    trabajos_orden.append(nuevo_trabajo_adicional)
+    resultados = []
 
-    # 3. Verificaciones: el trabajo 1 sigue intacto y el pendiente no suma al saldo exigible
-    assert trabajos_orden[0]["estado"] == "APROBADO"
-    total_aprobado_vigente = sum(
-        t["costo_mano_obra"] + t["costo_repuesto"] 
-        for t in trabajos_orden if t["estado"] == "APROBADO"
-    )
-    assert total_aprobado_vigente == 25000.0
+    def intentar_reserva(t_id: int):
+        resp = client.post(
+            f"/api/v1/trabajos/{t_id}/cotizaciones",
+            params={"usuario_id": usuario_id},
+            json={
+                "items": [
+                    {
+                        "tipo": "repuesto",
+                        "descripcion": "Reserva concurrente",
+                        "repuesto_id": repuesto_stock_uno_id,
+                        "cantidad": 1,
+                        "precio_unitario": "5000.00",
+                    }
+                ]
+            },
+        )
+        resultados.append(resp.status_code)
 
-    # 4. Si el cliente aprueba la nueva falla, recién ahí se consolida
-    trabajos_orden[1]["estado"] = "APROBADO"
-    total_aprobado_actualizado = sum(
-        t["costo_mano_obra"] + t["costo_repuesto"] 
-        for t in trabajos_orden if t["estado"] == "APROBADO"
-    )
-    assert total_aprobado_actualizado == 48000.0
+    h1 = threading.Thread(target=intentar_reserva, args=(trabajo_id_1,))
+    h2 = threading.Thread(target=intentar_reserva, args=(trabajo_id_2,))
 
-    
+    h1.start()
+    h2.start()
+    h1.join()
+    h2.join()
+
+    # Como stock_total = 1, solo una puede dar 201 Created
+    exitos = [c for c in resultados if c == 201]
+    assert len(exitos) == 1, f"Fallo de concurrencia: pasaron {len(exitos)} de 2 (códigos: {resultados})"
