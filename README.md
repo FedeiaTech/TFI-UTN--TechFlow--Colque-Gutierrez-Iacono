@@ -41,6 +41,7 @@ El proyecto surge de un relevamiento de campo con talleres de reparación de dis
 | Cotizaciones independientes por trabajo, con precio guardado como *snapshot* | Test end-to-end |
 | Reserva de repuesto al cotizar, con bloqueo de fila (`SELECT ... FOR UPDATE`); sin disponibilidad, la cotización se rechaza | Deploy: con stock 1, una segunda reserva responde 400. Falta un test automatizado de reservas simultáneas |
 | Aprobación o rechazo por trabajo; el rechazo libera la reserva | Deploy, con la disponibilidad verificada en la base |
+| Un trabajo declarado irreparable libera su reserva y deja de sumar al saldo | Deploy, con disponibilidad y saldo verificados en la base |
 | Confirmación de uso: la reserva pasa a utilizada y se descuenta el stock en la misma transacción | Recorrido sobre el deploy, con el stock verificado en la base |
 | La orden pasa sola a `listo` cuando todos sus trabajos terminaron, con resultado `reparado`, `parcial` o `sin_reparacion` | Test end-to-end y escenario de falla nueva |
 | Pagos parciales; total, saldo y estado de pago calculados en vistas SQL, nunca editables a mano | Recorrido sobre el deploy |
