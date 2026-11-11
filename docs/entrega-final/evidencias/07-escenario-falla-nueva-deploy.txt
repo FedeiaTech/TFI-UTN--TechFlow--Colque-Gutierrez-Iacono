@@ -1,0 +1,38 @@
+# Escenario 2: falla nueva durante la reparación (https://techflow-api.onrender.com/api/v1) - 2026-11-11 11:17
+
+## Trabajo 1: conector, cotizado y aprobado
+POST  /ordenes/8/trabajos
+      -> 201 {"id": 8, "orden_id": 8, "descripcion": "Cambio de conector", "diagnostico": null, "estado_tecnico": "pendiente_diagnostico"}
+
+PATCH /cotizaciones/9/decidir
+      -> 200 {"id": 9, "trabajo_id": 8, "numero": 1, "estado": "aprobada", "motivo_rechazo": null, "creada_en": "2026-11-11T14:17:43.882543Z", "decidida_en": "2026-11-11T14:17:44.876825Z"}
+
+GET   /ordenes/8/saldo
+      -> 200 {"orden_id": 8, "total_aprobado": "8000.00", "total_pagado": "0.00", "saldo": "8000.00", "estado_pago": "pendiente"}
+
+## Durante la reparación aparece una falla nueva: Trabajo 2
+POST  /ordenes/8/trabajos
+      -> 201 {"id": 9, "orden_id": 8, "descripcion": "Pantalla con líneas (hallazgo)", "diagnostico": null, "estado_tecnico": "pendiente_diagnostico"}
+
+POST  /trabajos/9/cotizaciones
+      -> 201 {"id": 10, "trabajo_id": 9, "numero": 1, "estado": "pendiente", "motivo_rechazo": null, "creada_en": "2026-11-11T14:17:48.877763Z", "decidida_en": null}
+
+## Con la cotización del trabajo 2 pendiente, el total aprobado NO cambia
+GET   /ordenes/8/saldo
+      -> 200 {"orden_id": 8, "total_aprobado": "8000.00", "total_pagado": "0.00", "saldo": "8000.00", "estado_pago": "pendiente"}
+
+## El trabajo 1 sigue su curso: se termina sin esperar al trabajo 2
+POST  /trabajos/8/confirmar-uso
+      -> 204 
+
+## El cliente rechaza el trabajo 2: el total aprobado sigue siendo solo el del trabajo 1
+PATCH /cotizaciones/10/decidir
+      -> 200 {"id": 10, "trabajo_id": 9, "numero": 1, "estado": "rechazada", "motivo_rechazo": "El cliente no quiere cambiar la pantalla", "creada_en": "2026-11-11T14:17:48.877763Z", "decidida_en": "2026-11-11T14:17:51.835101Z"}
+
+GET   /ordenes/8/saldo
+      -> 200 {"orden_id": 8, "total_aprobado": "8000.00", "total_pagado": "0.00", "saldo": "8000.00", "estado_pago": "pendiente"}
+
+## Con todos los trabajos terminados (uno terminado, uno cancelado) la orden queda lista con resultado 'parcial'
+PATCH /ordenes/8/entregar
+      -> 200 {"id": 8, "equipo_id": 9, "tecnico_id": 6, "falla_reportada": "No carga", "estado_fisico_ingreso": "OK", "accesorios_entregados": null, "estado": "entregado", "resultado": "parcial", "fecha_listo": "2026-11-11T14:17:52.163695Z"}
+

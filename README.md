@@ -115,6 +115,8 @@ pytest -v
 
 Las pruebas que necesitan base se omiten si no está definida `DATABASE_URL`.
 
+Las ejecuciones sobre el sistema desplegado, con la respuesta de la API ante cada regla crítica, están en [`docs/entrega-final/evidencias/`](docs/entrega-final/evidencias/README.md).
+
 ## Arquitectura y tecnologías
 
 Backend en capas (*routers* → *services* → *repositories* → modelos) sobre **FastAPI** y **SQLAlchemy 2** con **psycopg 3**. Base **PostgreSQL** administrada en **Supabase** (solo como base de datos, sin el resto de su plataforma). Despliegue en **Render**, configurado como código en [`render.yaml`](render.yaml).

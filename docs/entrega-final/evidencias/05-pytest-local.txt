@@ -1,0 +1,14 @@
+# pytest -v contra la base real (Supabase) - 2026-11-11 11:15
+============================= test session starts =============================
+platform win32 -- Python 3.13.3, pytest-9.1.1, pluggy-1.7.0 -- G:\FACULTAD\2026 - Materias\TFI\backend\.venv\Scripts\python.exe
+rootdir: G:\FACULTAD\2026 - Materias\TFI\backend
+plugins: anyio-4.15.1
+collecting ... collected 5 items
+
+tests/test_health.py::test_health_ok PASSED                              [ 20%]
+tests/test_health.py::test_health_db_ok PASSED                           [ 40%]
+tests/test_health.py::test_health_db_without_database_url_returns_503 PASSED [ 60%]
+tests/test_health.py::test_health_db_connection_failure_does_not_leak_url PASSED [ 80%]
+tests/test_vertical_ejecutable.py::test_vertical_ejecutable_completo PASSED [100%]
+
+============================= 5 passed in 40.41s ==============================

@@ -1,0 +1,7 @@
+# Trabajo irreparable libera reserva y saldo (deploy) - 2026-11-11 11:41
+
+bateria disponible antes: 4
+cotizacion aprobada -> disponible: 3 | saldo: 18000.00
+irreparable -> 200 irreparable
+despues -> disponible: 4 | saldo: 0.00
+entregar -> 200 entregado sin_reparacion

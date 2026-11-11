@@ -1,0 +1,6 @@
+# Rechazo de cotización libera la reserva (deploy) - 2026-11-11 11:19
+
+pin antes (stock, reservado, disponible): (1, 0, 1)
+cotizar pin -> 201 | pin: (1, 1, 0)
+cotizar otro pin sin disponibilidad -> 400 {'detail': 'repuesto 7: disponibilidad insuficiente (0 < 1)'}
+rechazar cotizacion -> 200 rechazada | pin: (1, 0, 1)

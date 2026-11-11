@@ -1,0 +1,54 @@
+# Recorrido completo contra el deploy (https://techflow-api.onrender.com/api/v1) - 2026-11-11 11:16
+
+POST  /clientes
+      -> 201 {"id": 8, "nombre": "María (demo)", "telefono": "11-5555-5555"}
+
+POST  /clientes/8/equipos
+      -> 201 {"id": 8, "cliente_id": 8, "tipo": "celular", "marca": "Motorola", "modelo": "G60", "numero_serie": "SN-DEMO-G60", "imei": null}
+
+POST  /ordenes
+      -> 201 {"id": 7, "equipo_id": 8, "tecnico_id": 6, "falla_reportada": "La batería dura muy poco", "estado_fisico_ingreso": "Sin daños visibles", "accesorios_entregados": "Cargador", "estado": "recibido", "resultado": null, "fecha_listo": null}
+
+POST  /ordenes/7/trabajos?usuario_id=6
+      -> 201 {"id": 7, "orden_id": 7, "descripcion": "Cambio de batería", "diagnostico": null, "estado_tecnico": "pendiente_diagnostico"}
+
+PATCH /ordenes/trabajos/7/diagnosticar?usuario_id=6
+      -> 200 {"id": 7, "orden_id": 7, "descripcion": "Cambio de batería", "diagnostico": "Batería degradada al 61%", "estado_tecnico": "diagnosticado"}
+
+POST  /trabajos/7/cotizaciones?usuario_id=6
+      -> 201 {"id": 8, "trabajo_id": 7, "numero": 1, "estado": "pendiente", "motivo_rechazo": null, "creada_en": "2026-11-11T14:16:55.879018Z", "decidida_en": null}
+
+PATCH /cotizaciones/8/decidir?usuario_id=6
+      -> 200 {"id": 8, "trabajo_id": 7, "numero": 1, "estado": "aprobada", "motivo_rechazo": null, "creada_en": "2026-11-11T14:16:55.879018Z", "decidida_en": "2026-11-11T14:16:57.087117Z"}
+
+POST  /trabajos/7/confirmar-uso?usuario_id=6
+      -> 204 
+
+GET   /ordenes/7/saldo
+      -> 200 {"orden_id": 7, "total_aprobado": "26000.00", "total_pagado": "0.00", "saldo": "26000.00", "estado_pago": "pendiente"}
+
+## Regla: no se entrega con saldo pendiente
+
+PATCH /ordenes/7/entregar?usuario_id=6
+      -> 400 {"detail": "no se puede entregar la orden con saldo pendiente ($26000.00)"}
+
+## Regla: el monto de un pago debe ser > 0
+
+POST  /ordenes/7/pagos
+      -> 422 {"detail": [{"type": "greater_than", "loc": ["body", "monto"], "msg": "Input should be greater than 0", "input": "0", "ctx": {"gt": 0}}]}
+
+POST  /ordenes/7/pagos
+      -> 201 {"id": 7, "orden_id": 7, "monto": "10000.00", "registrado_por": 6, "pagado_en": "2026-11-11T14:17:01.595355Z"}
+
+GET   /ordenes/7/saldo
+      -> 200 {"orden_id": 7, "total_aprobado": "26000.00", "total_pagado": "10000.00", "saldo": "16000.00", "estado_pago": "parcial"}
+
+POST  /ordenes/7/pagos
+      -> 201 {"id": 8, "orden_id": 7, "monto": "16000.00", "registrado_por": 6, "pagado_en": "2026-11-11T14:17:03.247496Z"}
+
+GET   /ordenes/7/saldo
+      -> 200 {"orden_id": 7, "total_aprobado": "26000.00", "total_pagado": "26000.00", "saldo": "0.00", "estado_pago": "pagado"}
+
+PATCH /ordenes/7/entregar?usuario_id=6
+      -> 200 {"id": 7, "equipo_id": 8, "tecnico_id": 6, "falla_reportada": "La batería dura muy poco", "estado_fisico_ingreso": "Sin daños visibles", "accesorios_entregados": "Cargador", "estado": "entregado", "resultado": "reparado", "fecha_listo": "2026-11-11T14:16:58.454482Z"}
+
