@@ -1,7 +1,9 @@
+from datetime import datetime
+
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
-from app.models import Repuesto, RepuestoReserva
+from app.models import CotizacionItem, Repuesto, RepuestoReserva
 from app.models.enums import EstadoReserva
 
 
@@ -43,6 +45,19 @@ class RepuestoRepository:
         self.db.add(reserva)
         self.db.flush()
         return reserva
+
+    def liberar_reservas_de_cotizacion(self, cotizacion_id: int, ahora: datetime) -> None:
+        stmt = (
+            select(RepuestoReserva)
+            .join(CotizacionItem, CotizacionItem.id == RepuestoReserva.cotizacion_item_id)
+            .where(
+                CotizacionItem.cotizacion_id == cotizacion_id,
+                RepuestoReserva.estado == EstadoReserva.RESERVADA,
+            )
+        )
+        for reserva in self.db.execute(stmt).scalars():
+            reserva.estado = EstadoReserva.LIBERADA
+            reserva.liberada_en = ahora
 
     def obtener_reserva_por_item(self, cotizacion_item_id: int) -> RepuestoReserva | None:
         stmt = select(RepuestoReserva).where(RepuestoReserva.cotizacion_item_id == cotizacion_item_id)

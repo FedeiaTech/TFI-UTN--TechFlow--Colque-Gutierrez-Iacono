@@ -3,9 +3,17 @@ from datetime import datetime, timezone
 from sqlalchemy.orm import Session
 
 from app.models import Trabajo
-from app.models.enums import ESTADOS_TERMINALES_TRABAJO, EstadoOrden, EstadoTecnicoTrabajo, ResultadoOrden
+from app.models.enums import (
+    ESTADOS_TERMINALES_TRABAJO,
+    EstadoCotizacion,
+    EstadoOrden,
+    EstadoTecnicoTrabajo,
+    ResultadoOrden,
+)
+from app.repositories.cotizacion_repository import CotizacionRepository
 from app.repositories.historial_repository import HistorialRepository
 from app.repositories.orden_repository import OrdenRepository, TrabajoRepository
+from app.repositories.repuesto_repository import RepuestoRepository
 from app.services.errors import DomainError
 
 
@@ -15,6 +23,8 @@ class TrabajoService:
         self.trabajos = TrabajoRepository(db)
         self.ordenes = OrdenRepository(db)
         self.historial = HistorialRepository(db)
+        self.cotizaciones = CotizacionRepository(db)
+        self.repuestos = RepuestoRepository(db)
 
     def crear(self, orden_id: int, descripcion: str, usuario_id: int) -> Trabajo:
         orden = self.ordenes.obtener(orden_id)
@@ -52,6 +62,16 @@ class TrabajoService:
 
     def marcar_irreparable(self, trabajo_id: int, motivo: str, usuario_id: int) -> Trabajo:
         trabajo = self._transicionar_a_terminal(trabajo_id, EstadoTecnicoTrabajo.IRREPARABLE, motivo, usuario_id)
+        # La cotización vigente deja de sumar al saldo (no se cobra una reparación
+        # que no se hizo) y sus repuestos vuelven a estar disponibles. Se marca
+        # rechazada en lugar de borrarse, para conservar el historial.
+        cotizacion = self.cotizaciones.obtener_vigente(trabajo_id)
+        if cotizacion is not None:
+            ahora = datetime.now(timezone.utc)
+            cotizacion.estado = EstadoCotizacion.RECHAZADA
+            cotizacion.motivo_rechazo = f"Trabajo declarado irreparable: {motivo}"
+            cotizacion.decidida_en = ahora
+            self.repuestos.liberar_reservas_de_cotizacion(cotizacion.id, ahora)
         self.actualizar_orden_si_corresponde(trabajo.orden_id, usuario_id)
         self.db.commit()
         self.db.refresh(trabajo)

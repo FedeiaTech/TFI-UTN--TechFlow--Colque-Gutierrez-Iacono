@@ -82,19 +82,12 @@ class CotizacionService:
             cotizacion.estado = EstadoCotizacion.RECHAZADA
             cotizacion.motivo_rechazo = data.motivo_rechazo
             cotizacion.decidida_en = ahora
-            self._liberar_reservas(cotizacion_id, ahora)
+            self.repuestos.liberar_reservas_de_cotizacion(cotizacion_id, ahora)
             self.trabajo_service.marcar_cancelado(cotizacion.trabajo_id, data.motivo_rechazo or "", usuario_id)
 
         self.db.commit()
         self.db.refresh(cotizacion)
         return cotizacion
-
-    def _liberar_reservas(self, cotizacion_id: int, ahora: datetime) -> None:
-        for item in self.cotizaciones.items(cotizacion_id):
-            reserva = self.repuestos.obtener_reserva_por_item(item.id)
-            if reserva is not None and reserva.estado == EstadoReserva.RESERVADA:
-                reserva.estado = EstadoReserva.LIBERADA
-                reserva.liberada_en = ahora
 
     def confirmar_uso(self, trabajo_id: int, usuario_id: int) -> None:
         """Reparación terminada: en una sola transacción, cada reserva pasa a

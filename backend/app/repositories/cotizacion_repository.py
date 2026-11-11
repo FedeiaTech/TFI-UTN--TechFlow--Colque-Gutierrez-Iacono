@@ -29,6 +29,13 @@ class CotizacionRepository:
     def obtener(self, cotizacion_id: int) -> Cotizacion | None:
         return self.db.get(Cotizacion, cotizacion_id)
 
+    def obtener_vigente(self, trabajo_id: int) -> Cotizacion | None:
+        stmt = select(Cotizacion).where(
+            Cotizacion.trabajo_id == trabajo_id,
+            Cotizacion.estado.in_([EstadoCotizacion.PENDIENTE, EstadoCotizacion.APROBADA]),
+        )
+        return self.db.execute(stmt).scalar_one_or_none()
+
     def obtener_aprobada_vigente(self, trabajo_id: int) -> Cotizacion | None:
         stmt = select(Cotizacion).where(
             Cotizacion.trabajo_id == trabajo_id,
