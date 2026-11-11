@@ -1,13 +1,13 @@
 # Backend — TechFlow
 
-> Este directorio contiene el esqueleto de la API REST (FastAPI): configuración, conexión a PostgreSQL, endpoints de salud y pruebas. La lógica de dominio se incorporará de forma incremental.
+> API REST del núcleo P0: clientes, equipos, órdenes, trabajos, cotizaciones, reservas de repuestos y pagos. Desplegada en https://techflow-api.onrender.com ([Swagger](https://techflow-api.onrender.com/docs)).
 
 ## Stack
 
 - **FastAPI** (Python 3.10+)
-- **SQLAlchemy 2.x** (decisión tomada; no se usa SQLModel) con **psycopg 3** para persistencia
-- **OAuth2 + JWT** para autenticación
+- **SQLAlchemy 2.x** (no se usa SQLModel) con **psycopg 3** para persistencia
 - **PostgreSQL** como base de datos
+- Autenticación **OAuth2 + JWT**: en revisión, no incluida en esta versión
 
 ## Arquitectura interna (N-Capas)
 
@@ -39,6 +39,8 @@ uvicorn app.main:app --reload
 pytest
 ```
 
+La base se crea con `database/postgresql/schema.sql` y los datos de demostración (técnico y repuestos, que la API no expone por endpoint) se cargan con `database/postgresql/seed.sql`. Con Supabase, `DATABASE_URL` debe apuntar al **Session pooler** (puerto 5432): el Transaction pooler no soporta los *prepared statements* que usa psycopg 3.
+
 - `GET /health` responde `{"status":"ok"}` sin tocar la base.
 - `GET /health/db` ejecuta `SELECT 1`; responde 503 con un mensaje genérico si falta `DATABASE_URL` o falla la conexión.
 - `DATABASE_URL` admite `postgresql://...`; se normaliza a `postgresql+psycopg://` para SQLAlchemy.
@@ -54,14 +56,10 @@ pytest
 
 ## Hosting
 
-Render (deploy desde GitHub, soporte nativo para Python/FastAPI).
+Render, configurado como código en [`render.yaml`](../render.yaml): construye desde `backend/`, arranca con `uvicorn` y usa `/health` como health check. `DATABASE_URL` se carga desde el panel de Render, nunca en el repositorio.
 
 ---
 
-> **Enfoque de implementación**: el modelo se valida construyendo. Se modela, se implementa un recorrido pequeño, se comprueba, se corrige el modelo y se continúa. No se espera a una aprobación total del diseño para empezar a codificar.
+> **Enfoque de implementación**: el modelo se valida construyendo. Se modela, se implementa un recorrido pequeño, se comprueba, se corrige el modelo y se continúa.
 >
-> **Primer objetivo**: una vertical ejecutable cliente → equipo → orden → diagnóstico → cotización → aprobación → reserva → reparación → listo → pago → entrega.
->
-> **Segundo objetivo**: una segunda situación con trabajo adicional durante la reparación (nueva falla, nuevo trabajo y cotización independiente).
->
-> El esquema vigente está en [`database/postgresql/schema.sql`](../database/postgresql/schema.sql). Las pruebas de backend obligatorias están en [`docs/entrega-2/Esquema-Base-Datos.md`](../docs/entrega-2/Esquema-Base-Datos.md).
+> El esquema vigente está en [`database/postgresql/schema.sql`](../database/postgresql/schema.sql). Las pruebas de backend obligatorias están descriptas en [`docs/entrega-2/11-esquema-base-datos.md`](../docs/entrega-2/11-esquema-base-datos.md).

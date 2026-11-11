@@ -1,0 +1,16 @@
+name: keep-alive
+
+# El plan gratuito de Render duerme el servicio tras 15 minutos sin tráfico y
+# el primer request posterior tarda ~50 s. Este ping lo mantiene despierto.
+# GitHub ejecuta los cron solo desde la rama por defecto (main) y puede
+# demorarlos algunos minutos.
+on:
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - run: curl -fsS --max-time 90 https://techflow-api.onrender.com/health

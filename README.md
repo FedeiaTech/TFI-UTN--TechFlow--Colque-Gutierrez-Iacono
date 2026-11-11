@@ -1,87 +1,140 @@
-# TechFlow — Sistema de Gestión de Órdenes de Trabajo, Reparaciones e Inteligencia Operativa para Servicios Técnicos
+# TechFlow — Gestión de Órdenes de Trabajo para Servicios Técnicos
 
-Trabajo Final Integrador — Tecnicatura en Programación, UTN.
+Trabajo Final Integrador — Tecnicatura Universitaria en Programación, UTN.
 
-## Equipo
+TechFlow gestiona el ciclo completo de una reparación en un taller técnico (celulares, notebooks, consolas): desde que el equipo entra hasta que se entrega y se cobra, dejando registro de qué se hizo, quién lo hizo y cuánto se debe.
+
+## Integrantes
 
 - Brian Gutiérrez Colque
 - David Gutiérrez
 - Federico Iacono
 
-## Propuesta
+## Entrega final
 
-TechFlow es un sistema de gestión pensado para talleres de reparación técnica (celulares, PCs, notebooks, consolas), que cubre el ciclo completo de una orden de trabajo: desde la recepción del equipo hasta la entrega y cobro.
+| Recurso | Enlace |
+| --- | --- |
+| API desplegada | https://techflow-api.onrender.com |
+| Documentación interactiva (Swagger) | https://techflow-api.onrender.com/docs |
+| Informe Final (PDF) | _pendiente_ |
+| Video de presentación | _pendiente_ |
+| Versión entregada | _pendiente (tag del repositorio)_ |
 
-La propuesta surge de un relevamiento de campo (encuestas y entrevistas a 3 talleres de distinto tamaño), no de una idea genérica de ERP de retail. Los perfiles relevados mostraron problemas recurrentes: sobrecarga de actualizaciones de estado por WhatsApp, falta de visibilidad sobre la rentabilidad real del negocio, y necesidad de delegar tareas por roles (Recepcionista vs. Técnico) a medida que el equipo crece.
+> **Primera carga lenta.** La API está en el plan gratuito de Render, que suspende el servicio tras 15 minutos sin uso. Si estaba dormida, el primer request tarda alrededor de 50 segundos; los siguientes responden normal. Un workflow de GitHub Actions ([`keepalive.yml`](.github/workflows/keepalive.yml)) la consulta cada 10 minutos para evitarlo.
 
-A partir de eso, el núcleo obligatorio del producto (P0) quedó definido por el siguiente flujo operativo, validado con el tutor:
+## El problema
 
-```text
-Cliente → Equipo → Orden → Diagnóstico → Cotización → Aprobación/Rechazo → Reparación → Listo → Entrega
+El proyecto surge de un relevamiento de campo con talleres de reparación de distinto tamaño ([evidencia](docs/entrega-2/01-contexto-problematica-y-relevamiento.md)). Los problemas que se repitieron:
+
+- El estado de cada reparación vive en la memoria del técnico o en WhatsApp, y el cliente pregunta una y otra vez.
+- Una misma orden suele tener varias fallas con tiempos distintos (una espera un repuesto, otra ya está lista), y un estado único no alcanza para representarlo.
+- No queda claro cuánto debe el cliente ni qué repuestos ya están comprometidos para otra reparación.
+
+## Estado de la entrega
+
+### Implementado y probado
+
+| Funcionalidad | Cómo se comprobó |
+| --- | --- |
+| Alta de cliente, equipo y orden de trabajo, con técnico responsable, estado físico y accesorios de ese ingreso | Test end-to-end y recorrido sobre el deploy |
+| Varios trabajos por orden, cada uno con su diagnóstico y estado técnico propio | Escenario de falla nueva sobre el deploy |
+| Cotizaciones independientes por trabajo, con precio guardado como *snapshot* | Test end-to-end |
+| Reserva de repuesto al cotizar, con bloqueo de fila (`SELECT ... FOR UPDATE`); sin disponibilidad, la cotización se rechaza | Deploy: con stock 1, una segunda reserva responde 400. Falta un test automatizado de reservas simultáneas |
+| Aprobación o rechazo por trabajo; el rechazo libera la reserva | Deploy, con la disponibilidad verificada en la base |
+| Confirmación de uso: la reserva pasa a utilizada y se descuenta el stock en la misma transacción | Recorrido sobre el deploy, con el stock verificado en la base |
+| La orden pasa sola a `listo` cuando todos sus trabajos terminaron, con resultado `reparado`, `parcial` o `sin_reparacion` | Test end-to-end y escenario de falla nueva |
+| Pagos parciales; total, saldo y estado de pago calculados en vistas SQL, nunca editables a mano | Recorrido sobre el deploy |
+| **Regla:** una orden con saldo pendiente no se puede entregar | Test end-to-end y deploy (responde 400) |
+| **Regla:** el monto de un pago debe ser mayor a 0 | Deploy (responde 422) y `CHECK` en la base |
+| **Regla:** una falla nueva durante la reparación genera otro trabajo sin alterar lo ya aprobado | Escenario de falla nueva sobre el deploy |
+| Historial de cambios de estado de órdenes y trabajos, con usuario y fecha | Se registra en cada transición |
+
+### No implementado en esta versión
+
+Algunas de estas funcionalidades están diseñadas en la documentación de la 2.ª entrega, pero **no forman parte del sistema entregado**:
+
+- **Autenticación JWT**: en revisión ([PR #4](https://github.com/FedeiaTech/TFI-UTN--TechFlow--Colque-Gutierrez-Iacono/pull/4)). Hoy el usuario que realiza cada acción se indica con el parámetro `usuario_id`.
+- **Interfaz web**: hay un prototipo en revisión ([PR #5](https://github.com/FedeiaTech/TFI-UTN--TechFlow--Colque-Gutierrez-Iacono/pull/5)), no conectado a la API. El sistema se usa a través de la API y su documentación Swagger.
+- Consultas y listados de órdenes, clientes e historial (la API solo expone el saldo de una orden).
+- Mensaje de estado para enviar por WhatsApp.
+- Paso de un trabajo a `esperando_repuesto`, reemplazo de una cotización pendiente y liberación manual de una reserva.
+- Alerta automática de equipos listos y no retirados a los 30 días (los campos existen en la base, el proceso no).
+- Roles diferenciados, proveedores y compras, métricas e IA (fuera del alcance desde la 2.ª entrega).
+
+## Probar el sistema desplegado
+
+Desde [Swagger](https://techflow-api.onrender.com/docs) se puede recorrer el flujo completo. La base tiene precargados ([`seed.sql`](database/postgresql/seed.sql)) los datos que la API no expone por endpoint:
+
+- **Técnico de demostración:** id `6`. Usar este valor en `tecnico_id`, `usuario_id` y `registrado_por`. Es una cuenta ficticia, no corresponde a ningún integrante.
+- **Repuestos:** id `6` (pantalla), id `7` (pin de carga, con stock 1 para probar la falta de disponibilidad) e id `8` (batería).
+
+Recorrido sugerido:
+
+1. `POST /api/v1/clientes` y `POST /api/v1/clientes/{id}/equipos`
+2. `POST /api/v1/ordenes`
+3. `POST /api/v1/ordenes/{id}/trabajos` y `PATCH /api/v1/ordenes/trabajos/{id}/diagnosticar`
+4. `POST /api/v1/trabajos/{id}/cotizaciones` (un ítem de tipo `repuesto` reserva stock)
+5. `PATCH /api/v1/cotizaciones/{id}/decidir` con `{"aprobar": true}`
+6. `POST /api/v1/trabajos/{id}/confirmar-uso`
+7. `PATCH /api/v1/ordenes/{id}/entregar`: falla mientras haya saldo
+8. `POST /api/v1/ordenes/{id}/pagos` y volver a entregar
+
+## Ejecutar localmente
+
+Requiere Python 3.10 o superior y una base PostgreSQL. Los pasos detallados están en [`backend/README.md`](backend/README.md).
+
+```powershell
+cd backend
+python -m venv .venv
+.venv\Scripts\Activate.ps1
+pip install -r requirements-dev.txt
+copy .env.example .env      # completar DATABASE_URL
+uvicorn app.main:app --reload
 ```
 
-Compras a proveedores, analítica avanzada e IA quedan fuera de esta instancia: se incorporan recién sobre un núcleo operativo ya validado.
+La base se crea con [`database/postgresql/schema.sql`](database/postgresql/schema.sql) y se cargan los datos de demostración con [`seed.sql`](database/postgresql/seed.sql).
 
-### Módulos del P0
+### Variables de entorno
 
-1. **Órdenes de Trabajo** (núcleo): estado global simple (Recibido → En proceso → Listo → Listo - No retirado → Entregado) con resultado (Reparado/Parcial/Sin reparación). Cada orden agrupa trabajos con su propio diagnóstico y estado técnico (por ejemplo, Esperando repuesto o En reparación), a cargo de un técnico responsable, con historial de cambios de estado. El estado de pago (Pendiente/Parcial/Pagado) no es un campo editable: se deriva de las cotizaciones aprobadas y los pagos.
-2. **Clientes**: ficha de cliente con historial de equipos y órdenes.
-3. **Cotizaciones y Cobros**: cotizaciones independientes por trabajo (ninguna se borra; el total de la orden es la suma de las aprobadas), pagos parciales y saldo pendiente. Cuenta corriente queda fuera del P0: por decisión del grupo (ver [caso de referencia](docs/entrega-2/Caso-Completo-Reparacion.md), regla 8) una orden no se entrega con saldo pendiente. Es una decisión no validada por un negocio real; se reincorpora si un negocio indica lo contrario.
-4. **Repuestos y Stock**: modelado genérico (`equipos`/`repuestos` + `categoria_id`); el repuesto se reserva al cotizar y se descuenta de stock recién cuando el técnico confirma su uso.
+| Variable | Descripción |
+| --- | --- |
+| `DATABASE_URL` | Conexión a PostgreSQL. En Supabase se usa el **Session pooler** (puerto 5432). |
 
-### Fuera de alcance del P0 (para instancias posteriores)
+Las credenciales nunca se versionan: el `.env` está excluido del repositorio y en Render la variable se carga desde el panel.
 
-- **Proveedores y Compras**: gestión de órdenes de compra a proveedores.
-- **Panel de Métricas + IA**: dashboard analítico y generación de contenido/resúmenes vía IA. Se incorpora una vez que el núcleo operativo tenga datos reales, no como punto de partida.
-- Facturación electrónica (AFIP), pasarelas de pago (Mercado Pago), impresoras fiscales, automatización vía WhatsApp API.
+## Pruebas
 
-## Entregas
+```powershell
+cd backend
+pytest -v
+```
 
-| Instancia | Fecha | Contenido |
-| --- | --- | --- |
-| 1.ª Entrega | 30/08/2026 | Propuesta + repositorio → [`docs/entrega-1/`](docs/entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md) |
-| 2.ª Entrega | 27/09/2026 | Caso completo, esquema de base de datos y módulos P0 → [`docs/entrega-2/`](docs/entrega-2/) |
-| Entrega Final | 14/11/2026 | Código fuente, despliegue, documentación técnica y video |
+- `tests/test_vertical_ejecutable.py`: recorre el flujo completo contra una base real y verifica el bloqueo de entrega con saldo pendiente.
+- `tests/test_health.py`: disponibilidad de la API y de la base, sin exponer datos de conexión en los errores.
 
-Documentos de la 2.ª entrega (índice completo en [`docs/entrega-2/`](docs/entrega-2/README.md)):
+Las pruebas que necesitan base se omiten si no está definida `DATABASE_URL`.
 
-- [01 — Contexto, Problemática y Relevamiento](docs/entrega-2/01-contexto-problematica-y-relevamiento.md)
-- [02 — Propuesta de Valor, Viabilidad y Criterios](docs/entrega-2/02-propuesta-valor-y-viabilidad.md)
-- [03 — Objetivos, Alcance y Módulos P0](docs/entrega-2/03-objetivos-alcance-y-modulos.md)
-- [04 — Caso Completo de Reparación y Reglas de Negocio](docs/entrega-2/04-caso-completo-reparacion.md)
-- [05 — Especificación de Requerimientos (SRS ISO 29148)](docs/entrega-2/05-especificacion-requerimientos.md)
-- [06 — Casos de Uso y Actores](docs/entrega-2/06-casos-de-uso-y-actores.md)
-- [07 — Modelo de Dominio y Máquinas de Estado](docs/entrega-2/07-modelo-dominio-y-maquinas-estado.md)
-- [08 — Diseño UX, Arquitectura de Información y Pantallas](docs/entrega-2/08-diseno-ux-y-flujos-pantalla.md)
-- [09 — Organización del Equipo y Roles](docs/entrega-2/09-roles-y-organizacion-equipo.md)
-- [10 — Arquitectura Técnica y Patrones de Diseño](docs/entrega-2/10-arquitectura-tecnica.md)
-- [11 — Esquema de Base de Datos y Persistencia](docs/entrega-2/11-esquema-base-datos.md) ([DDL](database/postgresql/schema.sql))
-- [Diagramas PlantUML editables (.puml)](docs/entrega-2/diagramas/)
+## Arquitectura y tecnologías
 
-## Plan de trabajo
+Backend en capas (*routers* → *services* → *repositories* → modelos) sobre **FastAPI** y **SQLAlchemy 2** con **psycopg 3**. Base **PostgreSQL** administrada en **Supabase** (solo como base de datos, sin el resto de su plataforma). Despliegue en **Render**, configurado como código en [`render.yaml`](render.yaml).
 
-1. Propuesta + repositorio (1.ª entrega, completa).
-2. Caso de referencia, diseño de base de datos y definición de módulos (2.ª entrega, conforme con correcciones según la devolución del tutor del 05-10).
-3. Implementación del MVP: núcleo operativo (órdenes, clientes, cotizaciones, stock) primero, analítica e IA al final.
-4. Despliegue online, informe final y video explicativo.
-5. Defensa oral ante el comité.
+Las reglas que no pueden depender de la disciplina del usuario están en la base: el saldo y el estado de pago se derivan en vistas, y los montos y cantidades tienen restricciones `CHECK`. Las que dependen de una transición, como la entrega con saldo o la confirmación de uso con descuento de stock, están en los *services*.
 
-## Stack tecnológico
+Detalle en [`docs/entrega-2/10-arquitectura-tecnica.md`](docs/entrega-2/10-arquitectura-tecnica.md).
 
-- **Frontend**: React + TypeScript (Vite), Tailwind CSS, Zustand, TanStack (Query/Table/Form). Hosting: Vercel. Detalle en [`frontend/README.md`](frontend/README.md).
-- **Backend**: FastAPI (Python 3.10+), SQLAlchemy/SQLModel, OAuth2 + JWT. Hosting: Render. Detalle en [`backend/README.md`](backend/README.md).
-- **Base de datos**: PostgreSQL, alojada en Supabase como Postgres administrado, sin adoptar el resto de su plataforma.
-- **Gestión de proyecto**: Trello (Kanban).
-- **Control de versiones**: Git, con ramas `main`/`develop`/`feature`.
+## Documentación
+
+- [1.ª entrega: propuesta](docs/entrega-1/TRABAJO-FINAL-INTEGRADOR-unificado.md)
+- [2.ª entrega: análisis, modelo y arquitectura](docs/entrega-2/README.md) (11 documentos y diagramas)
+- [Devoluciones del tutor](Devoluciones/)
 
 ## Estructura del repositorio
 
 ```text
-/docs
-  /entrega-1    — propuesta unificada de la 1.ª entrega (Markdown navegable)
-  /entrega-2    — caso de referencia, esquema de base de datos y módulos de la 2.ª entrega
-/database       — scripts y migraciones (postgresql/)
-/frontend       — aplicación React (estructura inicial; código a partir de la implementación del MVP)
-/backend        — API FastAPI (estructura inicial; código a partir de la implementación del MVP)
-/Devoluciones   — devoluciones formales del tutor
+backend/        API FastAPI (código, pruebas y dependencias)
+database/       esquema PostgreSQL y datos de demostración
+docs/           documentación de la 1.ª y 2.ª entrega
+frontend/       reservado para la interfaz web (no incluida en esta versión)
+Devoluciones/   devoluciones del tutor
+render.yaml     configuración del despliegue
 ```
