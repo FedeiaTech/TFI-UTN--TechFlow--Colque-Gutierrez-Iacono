@@ -48,6 +48,13 @@ En cumplimiento con la Observación 10 de la 1.ª Devolución docente, el equipo
 | **David Gutiérrez** |  |  |  |  |  |
 | **Brian Gutiérrez Colque**|  |  |  |  |  |
 
+Escala, definida por lo realizado con cada tecnología:
+
+- **Nulo:** sin uso previo.
+- **Básico:** uso en ejercicios o tutoriales, consultando la documentación para casi todo.
+- **Medio:** desarrollo de algo funcional y resolución autónoma de problemas comunes.
+- **Avanzado:** uso con soltura, comprensión de su funcionamiento interno y capacidad de explicar y defender decisiones.
+
 > [!NOTE]
 > **Resolución definitiva de la disyuntiva Backend:** En las primeras presentaciones se mencionó la posibilidad de emplear Spring Boot o FastAPI. El equipo **cerró definitivamente la decisión en favor de FastAPI (Python)**. La curva de aprendizaje de Spring Boot (Java) y la configuración de su ecosistema empresarial ralentizaban la entrega; FastAPI ofrece tipado estático nativo con Pydantic, generación automática de documentación interactiva Swagger UI y un consumo de memoria extremadamente bajo, ideal para instancias gratuitas en la nube.
 
