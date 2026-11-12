@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 
 from app.routers import clientes, cotizaciones, health, ordenes, pagos
 from app.services.errors import DomainError
+from app.routers.auth import router as auth_router
 
 app = FastAPI(title="TechFlow API")
 
@@ -17,3 +18,4 @@ app.include_router(clientes.router)
 app.include_router(ordenes.router)
 app.include_router(cotizaciones.router)
 app.include_router(pagos.router)
+app.include_router(auth_router)

@@ -11,6 +11,10 @@ class Settings(BaseSettings):
 
     database_url: str | None = None
 
+    SECRET_KEY: str = "techflow-secret-key-default-change-in-production"
+    ALGORITHM: str = "HS256"
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24  # 24 horas
+
     @field_validator("database_url")
     @classmethod
     def normalize_database_url(cls, value: str | None) -> str | None:
@@ -26,3 +30,7 @@ class Settings(BaseSettings):
 @lru_cache
 def get_settings() -> Settings:
     return Settings()
+
+
+# Instancia para importar directamente en otros módulos
+settings = get_settings()
