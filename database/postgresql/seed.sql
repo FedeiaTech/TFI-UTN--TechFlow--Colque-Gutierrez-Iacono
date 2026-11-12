@@ -1,11 +1,12 @@
 -- TechFlow — Datos de demostración (idempotente: se puede correr varias veces).
 -- Carga lo que la API no expone por endpoint: un técnico y el catálogo de repuestos.
 --
--- Cuenta demo pública: demo@techflow.local / demo1234
+-- Cuenta demo pública: demo@example.com / demo1234 (example.com es un dominio reservado
+-- para documentación; el login rechaza dominios especiales como .local)
 -- Es una cuenta ficticia para la evaluación; no corresponde a ningún integrante.
 
 INSERT INTO usuarios (nombre, email, password_hash)
-VALUES ('Técnico Demo', 'demo@techflow.local',
+VALUES ('Técnico Demo', 'demo@example.com',
         '$2b$12$i8z5C5tLnaSFI9wqDjwV3.Azlb1ErRInqY3zXgs6xtYLkkNe/iwL6')
 ON CONFLICT (email) DO NOTHING;
 

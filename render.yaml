@@ -15,3 +15,7 @@ services:
       # dashboard de Render: nunca se versiona.
       - key: DATABASE_URL
         sync: false
+      # Firma de los tokens JWT. Render genera un valor aleatorio propio, así
+      # producción no usa el valor por defecto que figura en el código.
+      - key: SECRET_KEY
+        generateValue: true

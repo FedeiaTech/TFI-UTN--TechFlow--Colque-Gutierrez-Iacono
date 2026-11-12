@@ -39,14 +39,14 @@ El proyecto surge de un relevamiento de campo con talleres de reparación de dis
 | Alta de cliente, equipo y orden de trabajo, con técnico responsable, estado físico y accesorios de ese ingreso | Test end-to-end y recorrido sobre el deploy |
 | Varios trabajos por orden, cada uno con su diagnóstico y estado técnico propio | Escenario de falla nueva sobre el deploy |
 | Cotizaciones independientes por trabajo, con precio guardado como *snapshot* | Test end-to-end |
-| Reserva de repuesto al cotizar, con bloqueo de fila (`SELECT ... FOR UPDATE`); sin disponibilidad, la cotización se rechaza | Deploy: con stock 1, una segunda reserva responde 400. Falta un test automatizado de reservas simultáneas |
+| Reserva de repuesto al cotizar, con bloqueo de fila (`SELECT ... FOR UPDATE`); sin disponibilidad, la cotización se rechaza | Test automatizado de dos reservas simultáneas sobre stock 1 (solo una se crea) y deploy (responde 400) |
 | Aprobación o rechazo por trabajo; el rechazo libera la reserva | Deploy, con la disponibilidad verificada en la base |
 | Un trabajo declarado irreparable libera su reserva y deja de sumar al saldo | Deploy, con disponibilidad y saldo verificados en la base |
 | Confirmación de uso: la reserva pasa a utilizada y se descuenta el stock en la misma transacción | Recorrido sobre el deploy, con el stock verificado en la base |
 | La orden pasa sola a `listo` cuando todos sus trabajos terminaron, con resultado `reparado`, `parcial` o `sin_reparacion` | Test end-to-end y escenario de falla nueva |
 | Pagos parciales; total, saldo y estado de pago calculados en vistas SQL, nunca editables a mano | Recorrido sobre el deploy |
 | **Regla:** una orden con saldo pendiente no se puede entregar | Test end-to-end y deploy (responde 400) |
-| **Regla:** el monto de un pago debe ser mayor a 0 | Deploy (responde 422) y `CHECK` en la base |
+| **Regla:** el monto de un pago debe ser mayor a 0 | Test automatizado y deploy (responde 422); además, `CHECK` en la base |
 | **Regla:** una falla nueva durante la reparación genera otro trabajo sin alterar lo ya aprobado | Escenario de falla nueva sobre el deploy |
 | Historial de cambios de estado de órdenes y trabajos, con usuario y fecha | Se registra en cada transición |
 
@@ -111,6 +111,7 @@ pytest -v
 ```
 
 - `tests/test_vertical_ejecutable.py`: recorre el flujo completo contra una base real y verifica el bloqueo de entrega con saldo pendiente.
+- `tests/test_reglas_negocio.py`: reglas críticas contra la API real: monto mayor que cero, bloqueo de entrega con saldo, reserva sin disponibilidad y dos reservas simultáneas sobre un repuesto con stock 1.
 - `tests/test_health.py`: disponibilidad de la API y de la base, sin exponer datos de conexión en los errores.
 
 Las pruebas que necesitan base se omiten si no está definida `DATABASE_URL`.
