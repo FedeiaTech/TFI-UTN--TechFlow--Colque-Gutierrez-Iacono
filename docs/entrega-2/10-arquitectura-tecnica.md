@@ -44,7 +44,7 @@ En cumplimiento con la Observación 10 de la 1.ª Devolución docente, el equipo
 
 | Integrante | Python / FastAPI | SQL / PostgreSQL | React / TypeScript | Java / Spring Boot | Docker / Despliegue |
 |---|---|---|---|---|---|
-| **Federico Iacono** |  |  |  |  |  |
+| **Federico Iacono** | Medio | Medio | Básico | Básico | Básico |
 | **David Gutiérrez** |  |  |  |  |  |
 | **Brian Gutiérrez Colque**|  |  |  |  |  |
 
