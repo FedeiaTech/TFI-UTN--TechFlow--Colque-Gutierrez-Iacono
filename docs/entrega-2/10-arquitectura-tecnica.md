@@ -37,23 +37,15 @@ Fuente editable en [`diagramas/arquitectura/arquitectura_ncapas.puml`](diagramas
 
 En cumplimiento con la Observación 10 de la 1.ª Devolución docente, el equipo documenta la elección unificada del stack y el nivel real de dominio de sus integrantes.
 
-### 2.1. Declaración de Competencias del Equipo
+### 2.1. Conocimientos del Equipo
 
-> [!IMPORTANT]
-> **Pendiente:** cada integrante completa su propia fila (Nulo / Básico / Medio / Avanzado). Oscar pidió el nivel real, así que lo declara cada uno y no lo asume otra persona.
+Cada integrante cuenta qué hizo con Python/FastAPI, SQL/PostgreSQL, React/TypeScript, Java/Spring Boot y despliegue. Lo escribe cada uno: Oscar pidió el conocimiento real, así que no lo asume otra persona.
 
-| Integrante | Python / FastAPI | SQL / PostgreSQL | React / TypeScript | Java / Spring Boot | Docker / Despliegue |
-|---|---|---|---|---|---|
-| **Federico Iacono** | Medio | Medio | Básico | Básico | Básico |
-| **David Gutiérrez** |  |  |  |  |  |
-| **Brian Gutiérrez Colque**|  |  |  |  |  |
+**Federico Iacono.** Python y SQL son con lo que más trabajé: diseñé el esquema de la base y trabajé en el backend del proyecto (la separación en capas, las transacciones y las reglas de stock y de saldo), y puedo seguir y explicar ese código, aunque para lo menos habitual todavía consulto la documentación. React, Java y Docker los conozco de la cursada y de ejercicios, sin un proyecto propio. Donde más aporté fue en llevar el proyecto a producción: configurar Render y Supabase, manejar las variables de entorno sin exponer credenciales y verificar cada regla sobre el sistema desplegado, además de coordinar e integrar el trabajo del equipo.
 
-Escala, definida por lo realizado con cada tecnología:
+**David Gutiérrez.** _Pendiente._
 
-- **Nulo:** sin uso previo.
-- **Básico:** uso en ejercicios o tutoriales, consultando la documentación para casi todo.
-- **Medio:** desarrollo de algo funcional y resolución autónoma de problemas comunes.
-- **Avanzado:** uso con soltura, comprensión de su funcionamiento interno y capacidad de explicar y defender decisiones.
+**Brian Gutiérrez Colque.** _Pendiente._
 
 > [!NOTE]
 > **Resolución definitiva de la disyuntiva Backend:** En las primeras presentaciones se mencionó la posibilidad de emplear Spring Boot o FastAPI. El equipo **cerró definitivamente la decisión en favor de FastAPI (Python)**. La curva de aprendizaje de Spring Boot (Java) y la configuración de su ecosistema empresarial ralentizaban la entrega; FastAPI ofrece tipado estático nativo con Pydantic, generación automática de documentación interactiva Swagger UI y un consumo de memoria extremadamente bajo, ideal para instancias gratuitas en la nube.
