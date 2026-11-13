@@ -1,18 +1,28 @@
-# pytest -v contra la base real (Supabase) - 2026-11-11 23:45
+# pytest -v contra la base real (Supabase) - 2026-11-12 20:57
 ============================= test session starts =============================
 platform win32 -- Python 3.13.3, pytest-9.1.1, pluggy-1.7.0 -- G:\FACULTAD\2026 - Materias\TFI\backend\.venv\Scripts\python.exe
 rootdir: G:\FACULTAD\2026 - Materias\TFI\backend
 plugins: anyio-4.15.1
-collecting ... collected 9 items
+collecting ... collected 13 items
 
-tests/test_health.py::test_health_ok PASSED                              [ 11%]
-tests/test_health.py::test_health_db_ok PASSED                           [ 22%]
-tests/test_health.py::test_health_db_without_database_url_returns_503 PASSED [ 33%]
-tests/test_health.py::test_health_db_connection_failure_does_not_leak_url PASSED [ 44%]
-tests/test_reglas_negocio.py::test_regla_pago_monto_debe_ser_mayor_a_cero PASSED [ 55%]
-tests/test_reglas_negocio.py::test_regla_bloqueo_entrega_con_saldo_pendiente PASSED [ 66%]
-tests/test_reglas_negocio.py::test_regla_reserva_repuesto_sin_disponibilidad PASSED [ 77%]
-tests/test_reglas_negocio.py::test_regla_concurrencia_dos_reservas_simultaneas_stock_uno PASSED [ 88%]
+tests/test_auth.py::test_login_exitoso PASSED                            [  7%]
+tests/test_auth.py::test_login_credenciales_invalidas PASSED             [ 15%]
+tests/test_auth.py::test_acceso_ruta_protegida_con_token PASSED          [ 23%]
+tests/test_auth.py::test_acceso_ruta_protegida_sin_token_falla PASSED    [ 30%]
+tests/test_health.py::test_health_ok PASSED                              [ 38%]
+tests/test_health.py::test_health_db_ok PASSED                           [ 46%]
+tests/test_health.py::test_health_db_without_database_url_returns_503 PASSED [ 53%]
+tests/test_health.py::test_health_db_connection_failure_does_not_leak_url PASSED [ 61%]
+tests/test_reglas_negocio.py::test_regla_pago_monto_debe_ser_mayor_a_cero PASSED [ 69%]
+tests/test_reglas_negocio.py::test_regla_bloqueo_entrega_con_saldo_pendiente PASSED [ 76%]
+tests/test_reglas_negocio.py::test_regla_reserva_repuesto_sin_disponibilidad PASSED [ 84%]
+tests/test_reglas_negocio.py::test_regla_concurrencia_dos_reservas_simultaneas_stock_uno PASSED [ 92%]
 tests/test_vertical_ejecutable.py::test_vertical_ejecutable_completo PASSED [100%]
 
-======================== 9 passed in 103.07s (0:01:43) ========================
+============================== warnings summary ===============================
+tests/test_auth.py::test_acceso_ruta_protegida_con_token
+  G:\FACULTAD\2026 - Materias\TFI\backend\.venv\Lib\site-packages\jose\jwt.py:311: DeprecationWarning: datetime.datetime.utcnow() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.now(datetime.UTC).
+    now = timegm(datetime.utcnow().utctimetuple())
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+================== 13 passed, 1 warning in 101.19s (0:01:41) ==================

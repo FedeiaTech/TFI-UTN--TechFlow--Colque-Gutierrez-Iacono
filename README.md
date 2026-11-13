@@ -49,12 +49,13 @@ El proyecto surge de un relevamiento de campo con talleres de reparación de dis
 | **Regla:** el monto de un pago debe ser mayor a 0 | Test automatizado y deploy (responde 422); además, `CHECK` en la base |
 | **Regla:** una falla nueva durante la reparación genera otro trabajo sin alterar lo ya aprobado | Escenario de falla nueva sobre el deploy |
 | Historial de cambios de estado de órdenes y trabajos, con usuario y fecha | Se registra en cada transición |
+| Inicio de sesión con JWT: `POST /auth/login` valida contra la tabla `usuarios` (contraseña con bcrypt) y `GET /auth/me` devuelve el usuario del token | Tests automatizados y deploy (credenciales inválidas responden 401) |
 
 ### No implementado en esta versión
 
 Algunas de estas funcionalidades están diseñadas en la documentación de la 2.ª entrega, pero **no forman parte del sistema entregado**:
 
-- **Autenticación JWT**: en revisión ([PR #4](https://github.com/FedeiaTech/TFI-UTN--TechFlow--Colque-Gutierrez-Iacono/pull/4)). Hoy el usuario que realiza cada acción se indica con el parámetro `usuario_id`.
+- **Protección de los endpoints de negocio con el token**: el inicio de sesión funciona, pero las operaciones todavía no exigen el token y el usuario que realiza cada acción se indica con el parámetro `usuario_id`.
 - **Interfaz web**: hay un prototipo en revisión ([PR #5](https://github.com/FedeiaTech/TFI-UTN--TechFlow--Colque-Gutierrez-Iacono/pull/5)), no conectado a la API. El sistema se usa a través de la API y su documentación Swagger.
 - Consultas y listados de órdenes, clientes e historial (la API solo expone el saldo de una orden).
 - Mensaje de estado para enviar por WhatsApp.
@@ -66,7 +67,7 @@ Algunas de estas funcionalidades están diseñadas en la documentación de la 2.
 
 Desde [Swagger](https://techflow-api.onrender.com/docs) se puede recorrer el flujo completo. La base tiene precargados ([`seed.sql`](database/postgresql/seed.sql)) los datos que la API no expone por endpoint:
 
-- **Técnico de demostración:** id `6`. Usar este valor en `tecnico_id`, `usuario_id` y `registrado_por`. Es una cuenta ficticia, no corresponde a ningún integrante.
+- **Técnico de demostración:** id `6`, con inicio de sesión `demo@example.com` / `demo1234`. Usar este valor en `tecnico_id`, `usuario_id` y `registrado_por`. Es una cuenta ficticia, no corresponde a ningún integrante.
 - **Repuestos:** id `6` (pantalla), id `7` (pin de carga, con stock 1 para probar la falta de disponibilidad) e id `8` (batería).
 
 Recorrido sugerido:
@@ -100,8 +101,9 @@ La base se crea con [`database/postgresql/schema.sql`](database/postgresql/schem
 | Variable | Descripción |
 | --- | --- |
 | `DATABASE_URL` | Conexión a PostgreSQL. En Supabase se usa el **Session pooler** (puerto 5432). |
+| `SECRET_KEY` | Clave para firmar los tokens JWT. En Render se genera automáticamente. |
 
-Las credenciales nunca se versionan: el `.env` está excluido del repositorio y en Render la variable se carga desde el panel.
+Las credenciales nunca se versionan: el `.env` está excluido del repositorio y en Render las variables se cargan desde el panel.
 
 ## Pruebas
 
@@ -112,6 +114,7 @@ pytest -v
 
 - `tests/test_vertical_ejecutable.py`: recorre el flujo completo contra una base real y verifica el bloqueo de entrega con saldo pendiente.
 - `tests/test_reglas_negocio.py`: reglas críticas contra la API real: monto mayor que cero, bloqueo de entrega con saldo, reserva sin disponibilidad y dos reservas simultáneas sobre un repuesto con stock 1.
+- `tests/test_auth.py`: inicio de sesión correcto, credenciales inválidas y acceso a una ruta protegida con y sin token.
 - `tests/test_health.py`: disponibilidad de la API y de la base, sin exponer datos de conexión en los errores.
 
 Las pruebas que necesitan base se omiten si no está definida `DATABASE_URL`.
