@@ -45,7 +45,7 @@ Cada integrante cuenta qué hizo con Python/FastAPI, SQL/PostgreSQL, React/TypeS
 
 **David Gutiérrez.** _Pendiente._
 
-**Brian Gutiérrez Colque.** _Pendiente._
+**Brian Gutiérrez Colque.** Me manejo con comodidad en Python, SQL, React y Java, y tengo una base más inicial en Docker y en despliegue. En el proyecto trabajé sobre todo en el backend: escribí los tests de las reglas de negocio contra la API real, incluido el de dos reservas simultáneas sobre un repuesto con stock 1, e implementé el inicio de sesión con JWT, que valida contra la tabla de usuarios con las contraseñas guardadas con bcrypt. También armé un primer prototipo de la interfaz web, que quedó como trabajo futuro.
 
 > [!NOTE]
 > **Resolución definitiva de la disyuntiva Backend:** En las primeras presentaciones se mencionó la posibilidad de emplear Spring Boot o FastAPI. El equipo **cerró definitivamente la decisión en favor de FastAPI (Python)**. La curva de aprendizaje de Spring Boot (Java) y la configuración de su ecosistema empresarial ralentizaban la entrega; FastAPI ofrece tipado estático nativo con Pydantic, generación automática de documentación interactiva Swagger UI y un consumo de memoria extremadamente bajo, ideal para instancias gratuitas en la nube.
