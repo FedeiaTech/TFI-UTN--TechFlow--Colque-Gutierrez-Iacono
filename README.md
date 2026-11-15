@@ -16,9 +16,9 @@ TechFlow gestiona el ciclo completo de una reparación en un taller técnico (ce
 | --- | --- |
 | API desplegada | https://techflow-api.onrender.com |
 | Documentación interactiva (Swagger) | https://techflow-api.onrender.com/docs |
-| Informe Final (PDF) | _pendiente_ |
-| Video de presentación | _pendiente_ |
-| Versión entregada | _pendiente (tag del repositorio)_ |
+| Informe Final (PDF) | [Informe Final - TechFlow - Grupo 175.pdf](docs/entrega-final/Informe%20Final%20-%20TechFlow%20-%20Grupo%20175.pdf) |
+| Video de presentación | https://youtu.be/se5KvJhRWrE |
+| Versión entregada | [v1.0.0](https://github.com/FedeiaTech/TFI-UTN--TechFlow--Colque-Gutierrez-Iacono/releases/tag/v1.0.0) |
 
 > **Primera carga lenta.** La API está en el plan gratuito de Render, que suspende el servicio tras 15 minutos sin uso. Si estaba dormida, el primer request tarda alrededor de 50 segundos; los siguientes responden normal. Un workflow de GitHub Actions ([`keepalive.yml`](.github/workflows/keepalive.yml)) la consulta cada 10 minutos para evitarlo.
 
