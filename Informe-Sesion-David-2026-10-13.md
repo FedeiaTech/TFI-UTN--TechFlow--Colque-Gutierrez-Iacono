@@ -86,7 +86,7 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
 - **Aporte clave:** Conecta la totalidad del repositorio haciéndolo 100% navegable desde GitHub sin enlaces rotos, preparando la rama para el Pull Request hacia `dev`.
 
 ### Commit 7: Corrección de Origen de Cifras y Puntos a Completar por el Equipo
-- **Estado:** en preparación
+- **Hash:** `72bc169`
 - **Archivos:** `01-contexto-problematica-y-relevamiento.md`, `04-caso-completo-reparacion.md`, `09-roles-y-organizacion-equipo.md`, `10-arquitectura-tecnica.md`, `entrega-2/README.md`.
 - **Qué se corrigió:**
   - Las cifras de "1,5–2 h diarias" y "20–35% de margen" figuraban como hipótesis del equipo; en realidad salieron de una búsqueda con IA (Paso 4 del relevamiento original). Ahora están rotuladas así y se quitó la cifra de RN-09.
@@ -94,6 +94,13 @@ Para facilitar la revisión por pares y el Pull Request en GitHub, los cambios s
   - La tabla de competencias queda vacía para que cada uno declare su nivel real.
   - Roles y RACI marcados como propuesta a confirmar entre los tres.
 - **Motivo:** la 1.ª devolución pide documentar el origen de las cifras, y no corresponde declarar niveles ajenos.
+
+### Commit 8: Delimitación de Diseño Proyectado y Declaración de Competencias
+- **Estado:** en preparación / staging
+- **Archivos:** `08-diseno-ux-y-flujos-pantalla.md`, `09-roles-y-organizacion-equipo.md`, `10-arquitectura-tecnica.md`.
+- **Qué se ajustó:**
+  - Se agregaron notas institucionales explícitas en los docs de diseño (UX/UI, roles, contratos REST) aclarando que son especificaciones proyectadas, diferenciándolas del backend efectivamente implementado y desplegado en Render (remitiendo al README).
+  - Se completó la declaración de competencias y conocimientos individuales de David Gutiérrez (perfil backend en Java/Spring Boot y SQL) y Brian Gutiérrez Colque, tanto en tabla como en narrativa en primera persona para el informe final.
 
 ---
 
@@ -108,5 +115,6 @@ Commits consolidados:
   [x] Commit 4 (e4b2b73) - docs: modela maquinas de estado de orden/trabajos, ciclo de reservas y DER completo
   [x] Commit 5 (aed7c21) - docs: define arquitectura N-capas, roles del equipo, principios UX y plantillas de WhatsApp
   [x] Commit 6 (ab78423) - docs: actualiza indices de navegacion, exclusion de guias y referencias de la 2da entrega
-  [ ] Commit 7           - docs: corrige origen de cifras y deja competencias y roles para confirmar
+  [x] Commit 7 (72bc169) - docs: corrige origen de cifras y deja competencias y roles para confirmar
+  [ ] Commit 8           - docs: explicita alcance proyectado en UX y arquitectura, y declara competencias de David
 ```

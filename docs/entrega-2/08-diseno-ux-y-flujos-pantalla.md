@@ -1,5 +1,9 @@
 # 08 — Diseño UX, Arquitectura de Información y Flujos de Pantalla
 
+> [!IMPORTANT]
+> **Alcance de implementación al cierre del proyecto:**  
+> Los wireframes, flujos de pantalla y la funcionalidad del botón de copiado de mensajes para WhatsApp detallados en este documento corresponden al **diseño UX/UI proyectado** para el sistema. Para la entrega final del cursado, de común acuerdo con la cátedra para priorizar la solidez del dominio y las reglas de negocio, el frontend no fue integrado en producción y el sistema opera a través de su API REST documentada en Swagger. El detalle del alcance implementado se encuentra en el [README principal](../../README.md).
+
 ## 1. Filosofía de Diseño UX para Taller Electrónico
 
 El diseño de la experiencia de usuario (UX) en TechFlow está concebido específicamente para el entorno físico de un servicio técnico, caracterizado por:

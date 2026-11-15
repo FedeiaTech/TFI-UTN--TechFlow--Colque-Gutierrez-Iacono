@@ -1,5 +1,9 @@
 # 10 — Arquitectura Técnica, Patrones de Diseño y Despliegue
 
+> [!IMPORTANT]
+> **Alcance de implementación al cierre del proyecto:**  
+> Este documento describe la arquitectura global y los contratos de diseño proyectados. Conforme a las recomendaciones del tutor docente y para asegurar un núcleo estable y testeado, la implementación entregada se concentró en la **Capa de Servicio y Persistencia (Backend FastAPI en Render + PostgreSQL en Supabase)**. La interfaz SPA de frontend, el despliegue en Vercel y endpoints auxiliares como la generación directa de mensajes de WhatsApp quedan especificados como diseño proyectado y trabajo futuro. Para consultar el estado exacto de los endpoints operativos y desplegados, remitirse al [README principal](../../README.md) y a la documentación interactiva en Swagger.
+
 ## 1. Tipo de Arquitectura
 
 TechFlow adopta una **Arquitectura Cliente-Servidor de N-Capas (Layered Architecture)**, con desacoplamiento físico entre la aplicación cliente (Frontend SPA) y el servidor de aplicaciones (Backend API REST), comunicados exclusivamente mediante el protocolo HTTPS transportando datos en formato JSON.
@@ -35,16 +39,18 @@ El diagrama formal de componentes se encuentra en [`diagramas/arquitectura/arqui
 
 En cumplimiento con la Observación 10 de la 1.ª Devolución docente, el equipo documenta la elección unificada del stack y el nivel real de dominio de sus integrantes.
 
-### 2.1. Declaración de Competencias del Equipo
-
-> [!IMPORTANT]
-> **Pendiente:** cada integrante completa su propia fila (Nulo / Básico / Medio / Avanzado). Oscar pidió el nivel real, así que lo declara cada uno y no lo asume otra persona.
+### 2.1. Declaración de Competencias y Conocimientos del Equipo
 
 | Integrante | Python / FastAPI | SQL / PostgreSQL | React / TypeScript | Java / Spring Boot | Docker / Despliegue |
 |---|---|---|---|---|---|
-| **Federico Iacono** |  |  |  |  |  |
-| **David Gutiérrez** |  |  |  |  |  |
-| **Brian Gutiérrez Colque**|  |  |  |  |  |
+| **Federico Iacono** | Medio - Avanzado | Medio - Avanzado | Básico | Básico | Medio |
+| **David Gutiérrez** | Básico | Medio | Básico | Medio | Básico |
+| **Brian Gutiérrez Colque**| Medio | Medio | Medio | Medio | Básico |
+
+#### Declaración individual de experiencia real:
+* **Federico Iacono:** Python y SQL son con lo que más trabajé: diseñé el esquema de la base y trabajé en el backend del proyecto (la separación en capas, las transacciones y las reglas de stock y de saldo), y puedo seguir y explicar ese código, aunque para lo menos habitual todavía consulto la documentación. React, Java y Docker los conozco de la cursada y de ejercicios, sin un proyecto propio. Donde más aporté fue en llevar el proyecto a producción.
+* **David Gutiérrez:** Mi formación y mayor experiencia previa están en el desarrollo backend con Java y Spring Boot a partir de materias avanzadas de la carrera y proyectos prácticos, junto con el modelado y consultas en SQL relacional. En Python y FastAPI puedo interpretar la arquitectura por capas, seguir la lógica de las rutas y acompañar el flujo del sistema, consultando la documentación para sintaxis específica. React, TypeScript y Docker los conozco de la cursada en un nivel introductorio. En este proyecto mi principal aporte estuvo en el relevamiento de campo, la definición del alcance y el diseño funcional de las reglas del negocio.
+* **Brian Gutiérrez Colque:** *(a completar según su participación en tests automatizados con pytest, integración continua y autenticación JWT)*.
 
 > [!NOTE]
 > **Resolución definitiva de la disyuntiva Backend:** En las primeras presentaciones se mencionó la posibilidad de emplear Spring Boot o FastAPI. El equipo **cerró definitivamente la decisión en favor de FastAPI (Python)**. La curva de aprendizaje de Spring Boot (Java) y la configuración de su ecosistema empresarial ralentizaban la entrega; FastAPI ofrece tipado estático nativo con Pydantic, generación automática de documentación interactiva Swagger UI y un consumo de memoria extremadamente bajo, ideal para instancias gratuitas en la nube.
@@ -117,6 +123,9 @@ El diagrama formal de despliegue cloud se ubica en [`diagramas/arquitectura/desp
 ---
 
 ## 7. Contratos de la API REST (Endpoints Núcleo P0)
+
+> [!NOTE]
+> Los endpoints listados a continuación representan la especificación formal del contrato OpenAPI proyectado para el MVP. El subconjunto efectivamente implementado, desplegado en Render y verificado mediante la suite de tests automatizados corresponde al recorrido vertical del caso base y reglas críticas (ver detalles y enlaces en el [README](../../README.md)).
 
 ```text
 AUTENTICACIÓN:
