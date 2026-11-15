@@ -14,7 +14,8 @@ Materia: Trabajo Final Integrador (TFI).
 ## 2. Asignación de Roles y Responsabilidades Técnicas
 
 > [!IMPORTANT]
-> **Propuesta a confirmar por el equipo.** Los roles y la matriz RACI son un borrador de David; hay que acordarlos entre los tres antes de darlos por cerrados. Fede ya viene trabajando el modelo y el backend, y el resto se puede mover según disponibilidad y nivel de cada uno.
+> **Alcance y distribución real de trabajo:**  
+> La asignación de roles y la matriz RACI de este documento representan la distribución organizativa proyectada para el ciclo de desarrollo completo. En la entrega final del cursado, el equipo se concentró colaborativamente en cerrar el núcleo transaccional en backend: Federico en el modelado relacional y la API, David en el relevamiento de campo, requerimientos y diseño funcional, y Brian en la suite de pruebas y seguridad. El estado de entrega se detalla en el [README principal](../../README.md).
 
 Para asegurar una ejecución eficiente, evitar cuellos de botella y garantizar que los tres integrantes participen activamente en la construcción y defensa técnica del proyecto, se delimitan las responsabilidades principales:
 
